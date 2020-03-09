@@ -1,0 +1,46 @@
+syntax = "proto2";
+
+package cybertron.proto;
+
+import "sensor_velodyne.proto"; 
+
+message ScanConfig {
+  // 25HZ(2500) || 50HZ(5000)
+  required uint32 frequency = 1 [default = 5000];
+  // 0.25, 0.5 degree(2500, 5000)
+  required uint32 angle_resolution = 2 [default = 2500];
+  // -45 degree(-450000)
+  required int32 start_angle = 3 [default = -450000];
+  // 225 degree(2250000)
+  required int32 stop_angle = 4 [default = 2250000]; 
+}
+
+message DataConfig {
+  
+  required uint32 output_channel = 1 [default = 1];
+  required bool remission = 2 [default = true];
+  required uint32 resolution = 3 [default = 1];
+  required uint32 encoder = 4 [default = 0];
+  required bool position = 5 [default = false];
+  required bool device_name = 6 [default = false];
+  required uint32 output_interval = 7 [default = 1];
+  optional bool timestamp = 8 [default = true]; 
+}
+
+message LmsConfig {
+    required string frame_id = 1;
+    optional adu.common.sensor.Model model = 2;
+    optional adu.common.sensor.Mode mode = 3;
+    required string host = 4;
+    required uint32 port = 5;
+    required float height = 6;
+    optional uint32 frequence = 7;
+    optional uint32 npackets = 8;
+    optional float max_angle = 9;
+    optional float min_angle = 10;
+    optional float view_direction = 11;
+    optional float view_width = 12;
+    optional ScanConfig scan_config = 13;
+    optional DataConfig data_config = 14;
+    optional string lidars_filter_config_path = 15;
+}

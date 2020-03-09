@@ -1,0 +1,76 @@
+syntax = "proto2";
+
+package adu.common.integ_masure;
+
+import "header.proto";
+import "common_geometry.proto";
+
+
+enum PntType{
+    PNT_INVALID = 0;
+    PNT_SPP = 1;
+    PNT_PHASE_TD = 2;
+    PNT_CODE_DIFF = 3;
+    PNT_RTK_FLOAT = 4;
+    PNT_RTK_FIXED = 5;
+}
+
+message IntegMeasure{
+    optional adu.common.header.Header header = 1;
+    enum MeasureType
+    {
+    //the measure data only include gnss position
+    GNSS_POS_ONLY = 0;
+    //the measure data include gnss position and velocity
+    GNSS_POS_VEL = 1;
+    //the measure data include x y position
+    GNSS_POS_XY = 2;
+    //the measure data only include gnss velocity
+    ENU_VEL_ONLY = 3;  
+    //the measure data only include point cloud position
+    POINT_CLOUD_POS = 4;
+    //the measure data only include odometer velocity
+    ODOMETER_VEL_ONLY = 5;
+    //trigger measure update using vehicle constraint
+    VEHICLE_CONSTRAINT = 6;
+    //double gnss antenna yaw
+    GNSS_DOUBLE_ANT_YAW = 7;
+    }
+    optional MeasureType measure_type = 2;
+
+    enum FrameType{
+    //in this frame the position give the longitude and latitude
+    ENU = 0;
+    //in this frame the position give x y and z from earth center
+    ECEF = 1;
+    //in this frame the position give x y and z in utm frame
+    UTM = 2;
+    ODOMETER = 3;
+    }
+    optional FrameType frame_type = 3;
+
+    //the position measure data from GNSS or point cloud, and the frame indentificated in frame_type
+    optional Point3D position = 4;
+
+    //the position measure data from GNSS or odometer, and the frame indentificated in frame_type
+    optional Point3D velocity = 5;
+
+    optional double yaw = 6;
+
+    //when the position frame is utm this value must set
+    optional int32 zone_id = 7;
+
+    //when the measure data have error variance is_have_variance is true
+    optional bool is_have_variance = 8;
+
+    //when use double antenna gnss can get yaw measure
+    optional bool is_gnss_double_antenna = 9;
+
+    //covariance matrix of the measure data
+    repeated double measure_covar = 10 [packed = true];
+
+    //when gnss refer to gnss_week *sec_per_week + gnss_second
+    optional double sensor_time_s = 11;
+
+    optional PntType gnss_pnt_type = 12;
+}

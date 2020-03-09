@@ -1,0 +1,25 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "simulation_common.proto";
+
+service UpdateStats {
+  rpc UpdateDelayStats (DelayStats) returns (UpdateStatus) {}
+}
+
+// Next-id: 3
+message DelayStats {
+  // Time
+    optional double timestamp_sec = 1;
+    optional double point_cloud_delay = 2;
+    optional double adc_status_msg_delay = 3;
+    optional double decision_msg_delay = 4;
+    optional double localization_msg_delay = 5;
+    optional double perception_msg_delay = 6;
+    optional double perception_radar_msg_delay = 7;
+    optional double planning_msg_delay = 8;
+    optional double prediction_msg_delay = 9;
+    optional double routing_msg_delay = 10;
+    optional double traffic_light_msg_delay = 11;
+
+}

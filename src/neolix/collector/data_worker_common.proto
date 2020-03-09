@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+package adu.common.collector;
+
+enum KeyDataType {
+    OTHER = 0;              // other
+    CRITICAL_DISENGAGE = 1; // critical_disengage from HMI-APP
+    SOS = 2;                // sos from DataCollector
+    ACCIDENT = 3;           // accident from HMI-APP or CRM
+}    
+
+// Common enums
+enum ErrorCode {
+    // common
+    OK = 0;
+    ERROR_INVALID_REQUEST = 1;
+    ERROR_INTERNAL_ERROR = 2;
+    ERROR_NOT_IMPLEMENTED = 3;
+    // ERROR_NO_DATA = 4;
+    
+    // Upload Errors: 10x
+    ERROR_NO_AVAIABLE_DISK = 101;
+    ERROR_TASK_EXIST = 102;
+    // Backup Errors: 20x
+    ERROR_NODATA = 201;
+    // Delete Errors: 30x
+    ERROR_NOTASK = 301;
+}

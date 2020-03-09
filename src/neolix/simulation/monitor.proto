@@ -1,0 +1,9 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "monitor_status.proto";
+
+message Monitor {
+  optional .adu.common.monitor.MonitorStatus monitor_status = 1;
+}
+

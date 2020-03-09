@@ -1,0 +1,19 @@
+syntax = "proto2";
+option java_multiple_files = true;
+package adu.hmi;
+import "launcher.proto";
+
+service LauncherService {
+    // for app get workers
+    rpc GetWorkers(GetWorkersRequest) returns (GetWorkersResponse) {}
+    // for app control workers
+    rpc ControlWorkers(ControlWorkersRequest) returns (ControlWorkersResponse) {}
+}
+
+service MonitorService {
+    rpc Report(ReportRequest) returns (ReportResponse) {}
+}
+
+service WorkerService {
+    rpc Control(ControlRequest) returns (ControlResponse) {}
+}

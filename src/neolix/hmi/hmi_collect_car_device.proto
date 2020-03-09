@@ -1,0 +1,11 @@
+// Defines the collect data proto Msg.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+// The car device state message
+message CollectDevice {
+    optional double speed = 1;    // speed in m/s
+    optional double odo_meter = 2;  // odometet in km
+}

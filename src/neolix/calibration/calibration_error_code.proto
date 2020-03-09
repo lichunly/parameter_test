@@ -1,0 +1,20 @@
+// Defines the error code of calibration.
+syntax = "proto2";
+
+package adu.calibration;
+
+option java_multiple_files = true;
+
+enum ErrorCode {
+    OK = 0;
+    ERROR = 1;
+    IMPUT_ERROR = 2;
+    NO_IMAGE = 3;
+    NO_CLOUD = 4;
+    INIT_ERROR = 5;
+    UNKNOW_ERROR = 6;
+    FORMAT_ERROR = 7;           //ieout
+    TIMESTAMPS_ERROR = 8;       //ieout
+    ACCURACY_UNSATISFIED = 9;   //ieout
+    //TO DO
+}

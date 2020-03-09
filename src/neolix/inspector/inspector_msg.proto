@@ -1,0 +1,78 @@
+// Defines the proto of InspectorWorker.
+syntax = "proto2";
+package adu.workers.inspector;
+
+option java_multiple_files = true;
+
+import "inspector_error_code.proto";
+import "sensor_image.proto";
+
+// Common enums
+enum CmdType {
+    START = 1;
+    CHECK = 2;
+    STOP = 3;
+}
+
+enum CameraType {
+    SMARTEREYE = 1;
+    LEFT_FORWARD = 2;
+    LEFT_BACK = 3;
+    RIGHT_FORWARD = 4;
+    RIGHT_BACK = 5;
+    REAR = 6;
+}
+
+enum LidarType {
+    LEFT = 1;
+    RIGHT = 2;
+    BACK = 3;
+    FUSION = 4;
+}
+
+// CoarseCameraValidity API
+message Euler {
+    optional double pitch = 1;
+    optional double yaw = 2;
+    optional double roll = 3;
+}
+
+message CoarseResult {
+    required CameraType type = 1;
+    optional double progress = 2;
+    optional bool validity = 3;
+    optional double origin = 4;
+    optional double current = 5;
+}
+
+message CoarseCameraRequest {
+    required CmdType cmd = 1;
+}
+
+message CoarseCameraResponse {
+    required ErrorCode code = 1;
+    repeated CoarseResult result = 2;
+}
+
+// LidarImuValidity API
+message LidarImuRequest {
+    required CmdType cmd = 1;
+    optional LidarType type = 2;
+}
+
+message LidarImuResponse {
+    required ErrorCode code = 1;
+    optional LidarType type = 2;
+    optional double progress = 3;
+    optional bytes pcd = 4;
+}
+
+// LidarCameraValidity API
+message LidarCameraRequest {
+    optional CameraType type = 1;
+}
+
+message LidarCameraResponse {
+    required ErrorCode code = 1;
+    optional adu.common.sensor.Image image = 2;
+}

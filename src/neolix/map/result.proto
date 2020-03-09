@@ -1,0 +1,65 @@
+syntax = "proto2";
+package adu.planning.logic_map;
+
+message Result {
+    message Range {
+        optional int32 start_index = 1;
+        optional int32 end_index = 2;
+    }
+    message Lane {
+        optional string lane_id = 1;
+        optional double length = 2;
+
+        // used in merge short lane
+        optional bool is_projected = 3 [default = false]; // is current lane in current result is projected
+
+        // used in range processor
+        repeated string sub_lane_id = 4; // current half lane id list
+        repeated Range sub_lane_index_range = 5; // current half lane range in reference line
+
+        repeated Point reference_line = 6;
+    }
+    message LaneWaypointInfo {
+        optional string lane_id = 1;
+        optional double s = 2;
+    }
+    message Point {
+        optional double x = 1 [default = 0.0];
+        optional double y = 2 [default = 0.0];
+        optional double z = 3 [default = 0.0];
+        optional double s = 4 [default = 0.0];
+        optional double heading = 5 [default = 0.0];
+        optional double kappa = 6 [default = 0.0];
+        optional double dkappa = 7 [default = 0.0];
+
+        repeated LaneWaypointInfo lane_waypoint = 8;
+    }
+    optional Lane lane_1 = 1;
+    optional Lane lane_2 = 2;
+    repeated Point reference_line_1 = 3; // will be deprecated
+    repeated Point reference_line_2 = 4; // will be deprecated
+    optional bool is_use_logic_map = 5 [default = false];
+}
+
+message LaneProjection {
+    optional string original_lane_id = 1;
+    repeated string sub_lane_id = 2; // whole lane id list
+}
+
+message TrajectoryResult {
+    optional bool is_loop = 1 [default = true];
+    optional string record_id = 2;
+    repeated Result.Point point = 3;
+}
+
+message ResultData {
+    repeated Result result = 1;
+    repeated string lane_id = 2;
+    repeated Result.Point anchor_point = 3;
+    repeated Result additional_result = 4;
+    repeated LaneProjection lane_projection = 5;
+    optional string map_district = 6;
+    optional string map_version = 7;
+    repeated string record_id = 8;
+    repeated Result self_to_self_result = 9;
+}

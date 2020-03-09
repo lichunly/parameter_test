@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package cybertron.proto;
+
+import "cyber_header.proto"; 
+
+message Whisper {
+    optional CyberHeader cyber_header=1; 
+    optional uint64 seq = 2;
+    optional int32  length = 3;
+    optional int32  position = 4;
+    optional string content = 5;
+    optional string telling_name = 6;
+    optional string channel_name = 7;
+}

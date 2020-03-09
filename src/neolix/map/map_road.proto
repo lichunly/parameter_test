@@ -1,0 +1,129 @@
+syntax = "proto2";
+package adu.common.hdmap;
+
+import "map_geometry.proto";
+import "map_id.proto";
+
+enum EnvironmentType {
+    ENV_NONE = 0;
+    ENV_TREE = 1;
+    ENV_GRASS = 2;
+};
+
+message BoundaryEdgeEnvironment {
+    optional double start_s = 1;
+    optional double end_s = 2;
+    repeated EnvironmentType env_type = 3;
+};
+
+enum BoundaryEdgeType {
+    DEFAULT = 0;
+    ROAD_SURFACE = 1;
+    ROAD_CURB = 2;
+    FENCE = 3;
+    WALL = 4;
+    SUNKEN = 5;
+    PED_XING = 6;
+    VIRTUAL = 7;
+};
+
+message BoundaryEdgeTypeInfo {
+    optional double start_s = 1;
+    optional double end_s = 2;
+    repeated BoundaryEdgeType type = 3;
+};
+
+enum SideRoad{
+    SIDE_DEFAULT = 0;
+    MAIN_ROAD = 1; 
+    SIDE_ROAD = 2;
+    ENTRANCE = 3;
+};
+
+enum Form{
+    FORM_DEFAULT = 0;   
+    RAMP = 1;   
+    BRIDGE = 2;  
+    TUNNEL = 3;  
+    FLYOVER = 4; 
+    ROUNDABOUT = 5;
+    OVERPASS = 6;
+};
+
+message BoundaryEdge {
+    optional Curve curve = 1;
+    enum Type {
+        UNKNOWN = 0;
+        NORMAL = 1;
+        LEFT_BOUNDARY = 2;
+        RIGHT_BOUNDARY = 3;
+    };
+    optional Type type = 2;
+
+    enum EdgeType {
+        DEFAULT = 0;
+        ROAD_SURFACE = 1;
+        ROAD_CURB = 2;
+        FENCE = 3;
+        WALL = 4;
+        SUNKEN = 5;
+        PED_XING = 6;
+        VIRTUAL = 7;
+    };
+    // Deprecated, use boundary_type instead
+    optional EdgeType edge_type = 3;
+
+    repeated BoundaryEdgeType boundary_type = 4;
+
+    repeated BoundaryEdgeEnvironment boundary_env = 5;
+
+    repeated BoundaryEdgeTypeInfo edge_type_info = 6;
+};
+
+message BoundaryPolygon {
+    repeated BoundaryEdge edge = 1;
+}; 
+
+// boundary with holes
+message RoadBoundary {
+  optional BoundaryPolygon outer_polygon = 1;
+  // if boundary without hole, hole is null
+  repeated BoundaryPolygon hole = 2;
+};
+
+// road section defines a road cross-section, At least one record must be defined in order to
+// use a road, If multiple road sections are defined, they must be listed in order along the road
+message RoadSection {
+    optional Id id = 1;
+    // lanes contained in this section
+    repeated Id lane_id = 2;
+    // boundary of section
+    optional RoadBoundary boundary = 3;
+};
+
+// The road is a collection of traffic elements, such as lanes, road boundary etc. 
+// It provides general information about the road.
+message Road {
+    optional Id id = 1;
+    repeated RoadSection section = 2;
+
+    // if lane road not in the junction, junction id is null.
+    optional Id junction_id = 3;
+
+    enum Type {
+        UNKNOWN = 0;
+        HIGHWAY = 1;
+        CITY_ROAD = 2;
+        PARK = 3;
+        NATIONAL_ROAD = 4;
+        PROVINCIAL_ROAD= 5;
+        COUNTY_ROAD =6;
+        TOWN_ROAD = 7;
+        WALK_ROAD = 8;
+    };
+
+
+    optional Type type = 4;
+    optional SideRoad side_road = 5;
+    optional Form road_form = 6;
+};

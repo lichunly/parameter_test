@@ -1,0 +1,19 @@
+// Defines the GRPC interfaces of the InspectorWorker.
+syntax = "proto2";
+package adu.workers.inspector;
+
+option java_multiple_files = true;
+
+import "inspector_msg.proto";
+
+service InspectorService {
+    // Camera Coarse validity
+    rpc CoarseCameraValidity (CoarseCameraRequest) returns (CoarseCameraResponse) {}
+
+    // Lidar-Imu calibration validity
+    rpc LidarImuValidity (LidarImuRequest) returns (LidarImuResponse) {}
+
+    // Lidar-Camera calibration validity
+    rpc LidarCameraValidity (LidarCameraRequest) returns (LidarCameraResponse) {}
+}
+

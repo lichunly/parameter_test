@@ -1,0 +1,48 @@
+syntax = "proto2";
+
+package adu.common.sensor;
+
+import "header.proto"; 
+
+enum LsLidarModel {
+    UNKOWN_LSLIDAR = 0;
+    N301 = 1;
+}
+
+message LsLidarPacket {
+    //required double time_stamp = 1;
+    required bytes data = 1;
+}
+message LsLidarBatchPacket {
+    repeated LsLidarPacket packet = 1;
+}
+/*message LsLidarScan {
+    optional adu.common.header.Header header = 1;
+    required LsLidarModel model = 2; // lslidar device model
+
+    repeated LsLidarPacket firing_pkts = 3;
+
+    optional string sn = 4; 
+    required uint64 basetime = 5 [default = 0];
+}*/
+
+message LsLidarPoint {
+    required uint64 time = 1;
+    required float x = 2;
+    required float y = 3;
+    required float z = 4;
+
+    required double azimuth = 5;
+    required double distance = 6;
+    required double intensity = 7;
+}
+
+message LsLidarScan {
+    required double altitude = 1; // Altitude of all the points within this scan
+    repeated LsLidarPoint points = 2; //The valid points in this scan sorted by azimuth from 0 to 359.99
+}
+
+message LsLidarSweep {
+    optional adu.common.header.Header header = 1;
+    repeated  LsLidarScan scans = 2;
+}

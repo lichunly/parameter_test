@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package cybertron.proto;
+import "sensor_ls_lidar.proto"; 
+
+message LsLidarConfig {
+    required string frame_id = 1;
+    required uint32 firing_data_port = 2;
+    optional bool use_gps_time = 3 [default = false];
+    optional int32 time_zone = 4 [default = 8];
+    optional string filter_config_path = 5;
+    required adu.common.sensor.LsLidarModel model = 6;
+    optional double min_range = 7 [default = 0.3];
+    optional double max_range = 8 [default = 100];
+    optional uint32 packet_nums = 9 [default = 1];
+    optional string lidars_filter_config_path = 10;
+}

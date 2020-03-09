@@ -1,0 +1,14 @@
+syntax = "proto2";
+package adu.hmi;
+option java_multiple_files = true;
+import "state.proto";
+
+service StateService {
+    // fetch basic message package
+    rpc Fetch (FetchRequest) returns (FetchResponse) {}
+    // event notify stream
+    rpc Notify (NotifyRequest) returns (stream NotifyResponse) {}
+
+    // event from hmi-server
+    rpc OnEvent(EventRequest) returns (EventResponse) {}
+}

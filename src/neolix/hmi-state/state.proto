@@ -1,0 +1,131 @@
+syntax = "proto2";
+package adu.hmi;
+option java_multiple_files = true;
+import "hmi_error_code.proto";
+
+message FetchRequest {
+    optional string request_id = 1;
+}
+
+message FetchResponse {
+    required ErrorCode code = 1;
+    optional string msg = 2;
+    optional ServerState state = 3;
+}
+
+enum ServerState {
+    STATE_INIT = 0;             // 系统初始化
+    STATE_SELF_CHECK_ING = 1;   // 自检中
+    STATE_SELF_CHECK_FAIL = 2;  // 自检失败
+    STATE_MANUAL_DRIVE = 3;     // 手动驾驶中
+    STATE_AUTO_DRIVE_ING = 4;   // 自动驾驶行驶中
+    STATE_AUTO_DRIVE_STOP_ING = 5;  // 自动驾驶临时停车中
+    STATE_AUTO_DRIVE_STOP_FIN = 6;  // 自动驾驶临时停车完成
+    STATE_AUTO_DRIVE_PARKING_IN_ING = 7;    // 自动驾驶入库中
+    STATE_AUTO_DRIVE_PARKING_OUT_ING = 8;   // 自动驾驶出库中
+    STATE_AUTO_DRIVE_FIN = 9;   // 自动驾驶完成
+    STATE_JOY_DRIVE_ING = 10;   // 手柄驾驶中
+    STATE_SHUTDOWN_ING = 11;    // 车辆工控机关机中
+    STATE_OTHER_MODE = 12;      // 车辆处于运营模式以外的工作模式
+    STATE_ERROR_STOP_ING = 13;  // 功能安全停车中
+    STATE_ERROR_STOP_FIN = 14;  // 功能安全停车完成
+    STATE_ERROR_RESTORE = 15;  // 功能安全报警恢复
+    STATE_PATROL_DISENGAGE_STOP_ING = 16; // 功能安全碰撞接管中
+    STATE_PATROL_DISENGAGE_STOP_FIN = 17; // 功能安全碰撞接管完成
+    STATE_PNC_STOP_ING = 18; // PNC控制停车中
+    STATE_PNC_STOP_FIN = 19; // PNC控制停车完成
+    STATE_PNC_CONTROL = 20; // PNC控制
+}
+
+enum DrivingMode {
+    MODE_MANUAL_DRIVE = 0;  // 手动驾驶模式
+    MODE_AUTO_DRIVE = 1;    // 自动驾驶模式
+    MODE_JOY_DRIVE = 2;     // 手柄驾驶模式
+}
+
+message MainStateChange {
+    optional double timestamp = 1;
+    optional ServerState last_state = 2;
+    optional ServerState current_state = 3;
+}
+
+message DrivingStateChange {
+    optional double timestamp = 1;
+    optional DrivingMode last_state = 2;
+    optional DrivingMode current_state = 3;
+}
+
+message StationInfo {
+    optional string park_id = 1;
+    optional string routing_id = 2;
+    optional string station_id = 3;
+}
+
+message Heartbeat {
+    required double timestamp = 1;
+}
+
+enum NotifyKey {
+    NOTIFY_HEARTBEAT = 0;               // 心跳
+    NOTIFY_MAIN_STATE_CHANGE = 1;       // 主状态机
+    NOTIFY_DRIVING_STATE_CHANGE = 2;    // 驾驶模式状态机
+    // NOTIFY_STATION_ARRIVE = 3;
+    // NOTIFY_STATION_LEAVE = 4;
+}
+
+message NotifyRequest {
+    optional string request_id = 1;
+    // tell server what notifications you want
+    repeated NotifyKey keys = 2;
+}
+
+message NotifyResponse {
+    // repeated Header header = 1;
+    required NotifyKey key = 2;
+    // response data
+    optional Heartbeat heartbeat = 3;
+    optional MainStateChange main_state = 4;
+    optional DrivingStateChange driving_state = 5;
+    // optional StationInfo station = 5;
+}
+
+enum EventType {
+    EVENT_INIT = 0;             // 系统初始化完成
+    // patrol events
+    EVENT_SELF_CHECK_OK = 1;    // 自检成功
+    EVENT_SELF_CHECK_ERROR = 2; // 自检失败
+    EVENT_PATROL_OK = 3;        // 巡检成功
+    EVENT_PATROL_ERROR = 4;     // 巡检失败
+    // driving mode change events
+    EVENT_MANUAL_DRIVE = 5;     // 手动模式
+    EVENT_AUTO_DRIVE = 6;       // 自动模式
+    EVENT_JOY_DRIVE_ON = 7;     // 手柄开启
+    EVENT_JOY_DRIVE_OFF = 8;    // 手柄关闭
+    // auto driving state events
+    EVENT_AUTO_DRIVE_PARKING_IN = 9;    // 开始入库
+    EVENT_AUTO_DRIVE_PARKING_OUT = 10;  // 开始出库
+    EVENT_AUTO_DRIVE_FINISH = 11;       // 自动驾驶完成
+    EVENT_AUTO_DRIVE_STOP = 12;         // 触发临时停车
+    EVENT_AUTO_DRIVE_GO = 13;           // 触发继续行驶
+    // car state events
+    EVENT_CAR_RUN = 14;         // 车辆运行
+    EVENT_CAR_STOP = 15;        // 车辆停止
+    // system events
+    EVENT_SHUTDOWN = 16;        // 触发系统关机
+    EVENT_SWITCH_MODE = 17;     // 触发PNC切换
+    // auto driving state events
+    EVENT_AUTO_DRIVE_ESTOP = 18; // 紧急停车
+    EVENT_PATROL_DISENGAGE = 19; // Patrol紧急接管
+    EVENT_API_SWITCH_MODE = 20;  // API接口调用切换PNC控制
+}
+
+message EventRequest {
+    required string request_id = 1;
+    optional EventType event = 2;
+    // optional event args.
+}
+
+message EventResponse {
+    required ErrorCode code = 1;
+    optional string msg = 2;
+}

@@ -1,0 +1,49 @@
+syntax = "proto2";
+package adu.common.data_recorder;
+
+message RecorderInfo {
+    optional StatusType status = 1;
+    optional Task task = 2;
+    optional Disk writing_disk = 3;
+    optional Data data = 4;
+    optional Resources resources = 5;
+}
+
+enum StatusType {
+    OK_WAITING_FOR_COMMANDS = 101;
+    OK_RECORDING_DATA = 102;
+    ALERT_DISK_NOT_FOUND = 201;
+    ALERT_DISK_NOT_MOUNT = 202;
+    ALERT_DISK_IS_WARNING = 203;
+    ALERT_DISK_IS_FATAL  = 204;
+    ALERT_CTRLNODE_CONN_FAILED = 205;
+}
+
+message Task {
+    optional string id = 1;
+    optional uint32 sequence = 2;
+    optional double duration = 3;
+}
+
+message Disk {
+    optional string sn = 1;
+    optional string fs = 2;
+    optional double size = 3;
+    optional double used = 4;
+    optional double avail = 5;
+    optional double use_percent = 6;
+    optional string mount = 7;
+    optional string slot = 8;
+}
+
+message Resources {
+    repeated Disk disks = 1;
+}
+
+message Data {
+    repeated Bag bags = 1;
+}
+
+message Bag {
+    optional string writing_filename = 1;
+}

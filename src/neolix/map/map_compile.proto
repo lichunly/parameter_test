@@ -1,0 +1,140 @@
+// Copyright (c) 2016 Baidu.com, Inc. All Rights Reserved
+//
+// @file data_core.proto
+// @author zhangbo12(com@baidu.com)
+// @date 2016/5/17 19:27:06
+syntax = "proto2";
+package adu.hdmap.common;
+
+import "map_xml.proto";
+
+message MapRoad {
+    optional uint32 road_index = 1;
+    optional Road road = 2;
+    optional uint32 junction_index = 3;
+    repeated uint32 signal_list = 4;
+}
+
+message MapSignal {
+    optional uint32 signal_index = 1;
+    optional Signal signal = 2;
+}
+
+message MapJunction {
+    optional uint32 junction_index = 1;
+    optional Junction junction = 2;
+    repeated uint32 road_list = 3;
+}
+
+message MapRestore {
+    repeated MapRoad road = 1;
+    repeated MapSignal signal = 2;
+    repeated MapJunction junction = 3;
+}
+
+message RoadRange {
+    optional double max_x = 1;
+    optional double min_x = 2;
+    optional double max_y = 3;
+    optional double min_y = 4;
+    optional double split_grid_size = 5;
+}
+
+message BorderPoint {
+    enum Direction {
+        SAME = 1;
+        OPPOSITE = 2;
+    }
+    enum LaneType {
+        TRAVEL = 1;
+        FORBIDDEN = 2;
+    }
+    optional Point3D out_border_point = 1;
+    optional Point3D in_border_point = 2;
+    optional LaneUniqueId lane_uni_id = 3;
+    optional Direction lane_direction = 4;
+    optional double lane_s_offset = 5;
+    optional LaneType lane_type = 6;
+}
+
+message SampleRefPoint {
+    optional Point3D point = 1;
+    optional double s_offset = 2; // road offset
+    optional double theta = 3;
+}
+
+message SamplePoint {
+    optional SampleRefPoint ref_point = 1;
+    repeated BorderPoint border_point = 2;
+}
+
+message RoadSampleItem {
+    optional uint32 road_index = 1;
+    optional string road_id = 2;
+    repeated SamplePoint sample_point = 3;
+}
+
+message RoadSample {
+    repeated RoadSampleItem road_sample_item = 1;
+}
+
+message RoadGridItem {
+    optional uint32 road_grid_index = 1;
+    repeated uint32 road_index = 2;
+}
+
+message RoadGrid {
+    repeated RoadGridItem road_grid_item = 1;
+}
+
+message LocationRestore {
+    optional RoadSample road_sample = 1;
+    optional RoadGrid road_grid = 2;
+    optional RoadRange road_range = 3;
+}
+
+message Restore {
+    optional MapRestore map_restore = 1;
+    optional LocationRestore location_restore = 2;
+}
+
+// road sample point
+message RoadRecord {
+    optional RoadSample road_sample = 1;
+    optional Road road = 3;
+}
+
+message DataStore {
+    repeated RoadRecord road_record = 1;
+    repeated Junction junction_record = 2;
+    repeated Signal signal_record = 3;
+}
+
+// maybe not in map
+message LinkLane {
+    enum Side {
+        LEFT = 1;
+        RIGHT = 2;
+        SUCCESSOR = 3;
+        PREDECESSOR = 4;
+    }
+    enum Direction {
+        SAME = 1;
+        OPPOSITE = 2;
+    }
+    optional LaneUniqueId neighbor_id = 1;
+    optional Side side = 2;
+    optional Direction direction = 3;
+    optional double start_s = 4;
+    optional double end_s = 5;
+    optional double ref_length = 6;
+}
+// lane topology
+message LaneTopology {
+    optional LaneUniqueId lane_id = 1;
+    repeated LinkLane link_lane = 2;
+}
+
+message TopologyData {
+    repeated LaneTopology lane_topology = 1;
+}

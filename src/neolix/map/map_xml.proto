@@ -1,0 +1,372 @@
+// Copyright (c) 2016 Baidu.com, Inc. All Rights Reserved
+//
+// @file data_core.proto
+// @author zhangbo12(com@baidu.com)
+// @date 2016/5/17 19:27:06
+syntax = "proto2";
+package adu.hdmap.common;
+
+message Point2D {
+    optional double x = 1;
+    optional double y = 2;
+}
+
+message Point3D {
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3;
+}
+
+message MapParameter {
+    optional double s_offset = 1; // position along reference line,
+                // measured in [m] from the beginning of the track, calculated in the xy-plane
+    optional double a = 2;
+    optional double b = 3;
+    optional double c = 4;
+    optional double d = 5;
+}
+
+message LaneUniqueId {
+    optional string road_id = 1;
+    optional string lane_section_id = 2;
+    optional int32 lane_id = 3;
+    optional string join_id = 4; // road_id+_+lane_section_id+_+lane_id
+}
+
+message LinkItem {
+    enum ElementType {
+        ROAD = 1;
+        JUNCTION = 2;
+    }
+    enum ContactPoint {
+        START = 1;
+        END = 2;
+    }
+    optional ElementType element_type = 1;
+    optional string element_id = 2; // road id or junction id
+    optional ContactPoint contact_point = 3;
+}
+
+message Neighbor {
+    enum Side {
+        LEFT = 1;
+        RIGHT = 2;
+    }
+    enum Direction {
+        SAME = 1;
+        OPPOSITE = 2;
+    }
+    optional Side side = 1;
+    optional string element_id = 2; // road id or junction id
+    optional Direction direction = 3;
+}
+
+message RoadLink {
+    optional LinkItem predecessor = 1;
+    optional LinkItem successor = 2;
+    repeated Neighbor neighbor = 3;
+}
+
+message RoadType {
+    enum Type {
+        UNKNOWN = 1;
+        RURAL = 2;
+        MOTOWAY = 3;
+        TOWN = 4;
+        LOWSPEED = 5;
+        PEDESTRIAN = 6;
+        BICYCLE = 7;
+    }
+    enum SpeedLimit {
+        NOLIMIT = 1;
+        UNDEFINED = 2;
+    }
+    optional double s = 1;
+    optional Type type = 2;
+    optional SpeedLimit speed_limit = 3;
+    optional double max = 4;
+}
+
+message Spline {
+    optional int32 dimension = 1;
+    optional int32 degree = 2;
+    repeated double knots = 3;
+    repeated Point2D controls = 4;
+}
+
+message Spiral {
+    optional double curv_start = 1;
+    optional double curv_end = 2;
+}
+
+message Arc {
+    optional double curvature = 1;
+}
+
+message Poly3 {
+    optional double a = 1;
+    optional double b = 2;
+    optional double c = 3;
+    optional double d = 4;
+}
+
+message ParamPoly3 {
+    optional double a_u = 1;
+    optional double b_u = 2;
+    optional double c_u = 3;
+    optional double d_u = 4;
+    optional double a_v = 5;
+    optional double b_v = 6;
+    optional double c_v = 7;
+    optional double d_v = 8;
+    optional string p_range = 9;
+}
+
+message Geometry {
+    optional double s = 1; // start position (s-coordinate)
+    optional Point2D start_position = 2;
+    optional double heading = 3; // start orientation (inertial heading)
+    optional double length = 4; // length of the element's reference line
+    optional bool line = 5; // reference line is a straight line
+    optional Spline spline = 6;
+    optional Spiral spiral = 7;
+    optional Arc arc = 8;
+    optional Poly3 poly3 = 9;
+    optional ParamPoly3 param_poly3 = 10;
+}
+
+message CrossFall {
+    enum Side{
+        LEFT = 1;
+        RIGHT = 2;
+        BOTH = 3;
+    }
+    optional Side side = 1; // applicable side of the road (left/right/both)
+    optional double s = 2;
+    optional double a = 3; // rad
+    optional double b = 4; // rad/m
+    optional double c = 5; // rad/m^2
+    optional double d = 6; // rad/m^3
+}
+
+message Shape {
+    optional double s = 1; // m start position (s-coordinate)
+    optional double t = 2; // m start position (t-coordinate)
+    optional double a = 3; // m
+    optional double b = 4; // 1
+    optional double c = 5; // 1/m
+    optional double d = 6; // 1/m^2
+}
+
+message RoadProfile {
+    repeated MapParameter elevation = 1; // (m) elev = a + b*s +c*s^2 + d*s^3
+    repeated MapParameter super_elevation = 2; // (rad) sElev = a + b*s +c*s^2 + d*s^3
+    repeated CrossFall cross_fall = 3; // crfall = a + b*s + c*s^2 + d*s^3
+    repeated Shape shape = 4; // h = a + b*dt + c*dt^2 +d*dt^3
+}
+
+message LaneLink {
+    optional int32 predecessor = 1; // ID of the linked lane
+    optional int32 successor = 2; // ID of the linked lane
+}
+
+message RoadMark {
+    enum RoadMarkType {
+        UNKNOWN = 0;
+        DOTTED_YELLOW = 1;
+        DOTTED_WHITE = 2;
+        SOLID_YELLOW = 3;
+        SOLID_WHITE = 4;
+        CURB = 6;
+        DOTTED_SOLID_YELLOW = 7;
+        SOLID_DOTTED_YELLOW = 8;
+        DOTTED_DOTTED_YELLOW = 9;
+        SOLID_SOLID_YELLOW = 10;
+        DOTTED_SOLID_WHITE = 11;
+        SOLID_DOTTED_WHITE = 12;
+        DOTTED_DOTTED_WHITE = 13;
+        SOLID_SOLID_WHITE = 14;
+    }
+    optional double s = 1; // start position (s-coordinate)
+    optional RoadMarkType road_mark_type = 2;
+}
+
+message Speed {
+    optional double s = 1; // start position (s-coordinate)
+    optional double max = 2; // maximum allowed speed (km/s)
+    optional double min = 3; //minimum allowed speed (km/s)
+}
+
+message StopLine {
+    optional double s = 1; // stop position (s-coordinate)
+    optional string signal_id = 2;
+    optional int32 signal_type = 3;
+    optional int32 signal_subtype = 4;
+}
+
+message YieldSign{
+    optional double s = 1; // yield position (s-coordinate)
+}
+
+message StopSign{
+    optional double s = 1; // stop position (s-coordinate)
+}
+
+message KeepClearArea {
+    optional double s = 1; // start position of clear area (s-coordinate)
+    optional double length = 2;
+}
+
+message LaneCrossWalk {
+    optional double s = 1; // start position of cross walk (s-coordinate)
+    optional double length = 2;
+}
+
+message Lane {
+    enum LaneType {
+        NONE = 1;
+        HIGHWAY_DRIVING = 2;
+        CITY_DRIVING = 3;
+        SHOULDER = 4;
+        BIKING = 5;
+        SIDEWALK = 6;
+        BORDER = 7;
+        RESTRICTED = 8;
+        PARKING = 9;
+        BIDIRECTIONAL = 10;
+        MEDIAN = 11;
+        ROAD_WORKS = 12;
+        TRAM = 13;
+        RAIL = 14;
+        ENTRY = 15;
+        EXIT = 16;
+        OFF_RAMP = 17;
+        ON_RAMP = 18;
+        VIRESCENCE = 19; // new item
+        VIRTUAL = 23;
+    }
+    enum TurnType { // move from LaneType
+        LEFT_TURN = 1;
+        RIGHT_TURN = 2;
+        U_TURN = 3;
+        NO_TURN = 4;
+        PRE_TURN = 5;
+        PRE_U_TURN = 6;
+    }
+
+    optional int32  lane_id = 1;
+    optional LaneType lane_type = 2;
+    repeated TurnType turn_type = 21;
+    optional bool level = 3;
+        // "true" = keep lane on level, .i.e. do not apply superelevation or crossfall
+        // "false" = apply superelevation and crossfall to this lane (default,
+    optional LaneLink link = 4;
+    repeated MapParameter width = 5; // width = a + b*ds + c*ds^2 + d*ds^3
+    repeated MapParameter border = 6; // t(border) = a + b*ds + c*ds^2 + d*ds^3
+    repeated RoadMark road_mark = 7;
+    repeated Speed speed = 10;
+    repeated StopLine stop_line = 11;
+    repeated YieldSign yield_sign = 12;
+    repeated StopSign stop_sign = 13;
+    repeated KeepClearArea keep_clear_area = 14;
+    //repeated LaneCrossWalk lane_cross_walk = 15;
+    repeated Crosswalk cross_walk = 15;
+}
+
+message LaneSection {
+    optional string lane_section_id = 6; // generate id when load data from xml
+    optional double s = 1; // start position (s-coordinate)
+    optional bool single_side = 2; // lane section entry is valid for one side only
+    repeated Lane left = 3;
+    repeated Lane center = 4;
+    repeated Lane right = 5;
+}
+
+message Lanes {
+    repeated MapParameter lane_offset = 1; // offset = a + b*ds + c*ds^2 + d*ds^3
+    repeated LaneSection lane_section = 2;
+}
+
+message Road {
+    optional string name = 1;
+    optional double length = 2;
+    optional string road_id = 3;
+    optional string junction = 4;
+    optional RoadLink road_link = 5;
+    repeated RoadType road_type = 6;
+    repeated Geometry road_geometry = 7;
+    optional RoadProfile road_profile = 8;
+    optional Lanes lanes = 9;
+}
+
+message Subsignal {
+    optional int32 subsignal_id = 1;
+    optional int32 subsignal_type = 2;
+    optional int32 subsignal_subtype = 3;
+}
+
+message Signal {
+    optional string signal_id = 1;
+    optional int32 signal_type = 2;
+    optional int32 signal_subtype = 3;
+    repeated Subsignal subsignals = 4;
+    repeated Point3D signal_vertex = 5;
+}
+
+message JunctionLaneLink {
+    optional string from_lane = 1;
+    optional string connect_lane = 2;
+    optional string to_lane = 3;
+}
+
+message Connection {
+    enum ContactPoint {
+        START = 1;
+        END = 2;
+    }
+    optional string incoming_road = 1;
+    optional string connecting_road = 2;
+    optional string outcoming_road = 3;
+    optional ContactPoint contact_point = 4;
+    repeated JunctionLaneLink lane_link = 5;
+}
+
+message Priority {
+    optional string high_road = 1;
+    optional string low_road = 2;
+}
+
+message Crosswalk {
+    optional string crosswalk_id = 1;
+    repeated Point2D vertex = 2;
+}
+
+message Junction {
+    optional string name = 1;
+    optional string junction_id = 2;
+    repeated Connection connections = 3;
+    repeated Point2D watch_area = 4;
+    repeated Crosswalk crosswalk = 5;
+    repeated Priority priority = 6;
+    optional bool virtual = 7;
+}
+
+message Header {
+    optional int32 rev_major = 1;
+    optional int32 rev_minor = 2;
+    optional string name = 3;
+    optional float version = 4;
+    optional string date = 5;
+    optional double north = 6;
+    optional double south = 7;
+    optional double east = 8;
+    optional double west = 9;
+    optional string vendor = 10;
+}
+
+message OpenDrive {
+    optional Header header = 1;
+    repeated Road road = 2;
+    repeated Junction junction = 3;
+    repeated Signal signal = 4;
+}

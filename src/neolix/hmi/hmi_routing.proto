@@ -1,0 +1,42 @@
+// Defines the message about routing demand.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+import "header.proto";
+import "common_geometry.proto";
+import "hmi_common.proto";
+import "hmi_error_code.proto";
+
+message RouteSegment {
+    repeated PolygonPoint point = 1;
+}
+
+message LaneChangeArea {
+    repeated PolygonPoint point = 1;
+}
+
+// Routing result message
+message RoutingPath {
+  optional .adu.common.header.Header header = 1;
+  repeated RouteSegment route_segment = 2;
+  repeated LaneChangeArea lane_change_area = 3;
+}
+
+// The request message of routing
+message RoutingRequest {
+  required PolygonPoint start = 1;
+  required PolygonPoint end = 2;
+  repeated PolygonPoint waypoints = 3;
+  required adu.common.Quaternion start_quaternion = 4;
+  optional adu.common.Quaternion end_quaternion = 5;
+}
+
+// The response message of routing request.
+message RoutingResponse {
+  required ErrorCode code = 1;
+  optional string info = 2;
+  optional RoutingPath data = 3;
+  optional double distance = 4;
+}

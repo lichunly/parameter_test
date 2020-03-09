@@ -1,0 +1,53 @@
+syntax = "proto2";
+
+package cybertron.proto;
+
+enum IOMethod {
+    IO_METHOD_UNKNOWN = 0;
+    IO_METHOD_READ = 1;
+    IO_METHOD_MMAP = 2;
+    IO_METHOD_USERPTR = 3;
+}
+
+message CameraConfig {
+    optional string camera_dev = 1;
+    optional string frame_id = 2;
+    //v4l pixel format
+    optional string pixel_format = 3 [default = "yuyv"];
+    //mmap, userptr, read
+    optional IOMethod io_method = 4;
+    optional uint32 width = 5;
+    optional uint32 height = 6;
+    optional uint32 frame_rate = 7;
+    optional bool monochrome = 8 [default = false];
+
+    optional int32 brightness = 9 [default = -1];
+    optional int32 contrast = 10 [default = -1];
+    optional int32 saturation = 11 [default = -1];
+    optional int32 sharpness = 12 [default = -1];
+    optional int32 gain = 13 [default = -1];
+
+    optional bool auto_focus = 14 [default = false];
+    optional int32 focus = 15 [default = -1];
+    optional bool auto_exposure = 16 [default = true];
+    optional int32 exposure = 17 [default = 100];
+    optional bool auto_white_balance = 18 [default = true];
+    optional int32 white_balance = 19 [default = 4000];
+    optional uint32 bytes_per_pixel = 20 [default = 3];
+    optional string trigger_param = 21 [default = "f2ff"];
+    optional uint32 metric_error_code = 22 [default = 11];
+    optional int32 fpga_dev_number = 23 [default = -1];
+    optional int32 camera_seq_number = 24 [default = -1];
+    // for binocular camera to match two image frame
+    optional uint32 x_offset = 25;
+    optional uint32 y_offset = 26;
+    optional bool gray_image = 27 [default = false];
+    optional bool use_os_time = 28 [default = false];
+    optional uint32 stamp_interval = 29;
+    optional string device_adaptive_key = 30;
+    // temp for image frame control, del it in futur
+    // false for thirty frames. true for fifteen frames
+    optional bool fifteen_or_thirty = 31 [default = false];
+    optional uint32 frame_drop_count = 32 [default = 0];
+    optional float transfer_frame_rate = 33;
+}

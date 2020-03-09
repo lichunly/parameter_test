@@ -1,0 +1,7 @@
+syntax = "proto2";
+package adu.common.collector;
+
+message Info {
+    optional uint64 timestamp = 1;
+    optional string trigger_rule = 2;
+}

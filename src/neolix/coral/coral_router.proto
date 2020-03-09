@@ -1,0 +1,18 @@
+syntax = "proto2";
+package adu.common.coral;
+import "router.proto";
+import "header.proto";
+
+// coral给pnc的routing接口
+message LaneIdShift {
+  required string lane_id =1;
+  optional double shift = 2 [default = 0.0];
+}
+message LaneIdShiftInfo {
+  repeated LaneIdShift lane_id_shift = 1;
+}
+message CoralRoutingResult {
+  optional adu.common.header.Header header = 1;
+  required adu.common.router.RoutingResult routing_result = 2;
+  optional LaneIdShiftInfo lane_id_shift_info = 3;
+}

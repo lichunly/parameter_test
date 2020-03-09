@@ -1,0 +1,30 @@
+syntax = "proto2";
+package adu.workers.openapi;
+
+option java_multiple_files = true;
+
+message CommonHeader {
+  required string request_id = 1;
+  optional string business = 2;
+}
+message CommonCmd {
+  required string cmd = 1;
+  optional string data = 2;
+}
+message CommonResult {
+  //0 success, else fail
+  required int32 status = 2;
+  //fail reason
+  optional string msg = 3;
+  //result with json format
+  optional string data = 4;
+}
+message CommonRequest {
+  optional CommonHeader common_header = 1;
+  optional CommonCmd common_cmd = 2;
+}
+
+message CommonResponse {
+  optional CommonHeader common_header = 1;
+  optional CommonResult common_result = 2;
+}

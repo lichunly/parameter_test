@@ -1,0 +1,125 @@
+syntax = "proto2";
+
+package adu.common.control;
+
+import "header.proto";
+import "global_adc_status.proto";
+import "common_geometry.proto";
+import "control_cmd.proto";
+import "router.proto";
+
+enum DrivingAction {
+     STOP = 0;
+     START = 1;
+     RESET = 2;
+};
+
+message PadMessage {
+    optional adu.common.header.Header header = 1;
+
+    // control mode, set mode according to low level defination
+    optional adu.common.status.DrivingMode driving_mode = 2; // send driving mode to drive
+
+    // action in the driving_mode
+    optional DrivingAction action = 3;
+    optional ControlCommand control_cmd = 4;
+}
+
+message PadCommand {
+    optional adu.common.header.Header header = 1;
+    optional ControlCommand pad_cmd = 2;
+    optional bool handle = 3;
+    optional DrivingAction action = 4;
+}
+
+enum ControlAction {
+    ON = 0;
+    OFF = 1;
+    AUTO = 2;
+}
+
+message DrivingControlRequest {
+    optional adu.common.header.Header header = 1;
+    optional adu.common.status.DrivingMode driving_mode = 2;
+    optional adu.common.control.DrivingAction action = 3;
+    optional bool joy_control = 4;
+}
+
+message PadNormalCommand {
+    optional adu.common.header.Header header = 1;
+    optional ControlAction action = 2;
+}
+
+enum ErrorCode {
+    SUCCESS = 0;
+    ERROR_REQUEST = 1;
+    ERROR_RESPONSE_FAILED = 2;
+    ERROR_LAUNCH_PARKING_BRAKE = 3;
+    ERROR_LAUNCH_GEAR_PARKING = 4;
+    ERROR_ROUTING_INVALID_START_POINT = 5;
+    ERROR_ROUTING_INVALID_END_POINT = 6;
+    ERROR_ROUTING_INVALID_WAY_POINT = 7;
+}
+
+message PadResponse {
+    optional adu.common.header.Header header = 1;
+    optional ErrorCode error_code = 2;
+    optional string error_msg = 3;
+}
+
+enum AirConditionMode {
+    AUTO_MODE = 1;
+    ECO = 2;
+    FAN = 3;
+    COLD = 4;
+    WARM = 5;
+}
+
+message PadAirConditionCommand {
+    optional adu.common.header.Header header = 1;
+    optional float temperature = 2;
+    optional AirConditionMode mode = 3;
+    optional int32 fan = 4;
+    optional bool open = 5;
+}
+
+message PadHornCommand {
+    optional adu.common.header.Header header = 1;
+    optional bool horn = 2; //若为true则鸣笛，为false则什么都不做
+}
+
+message PadEStopCommand {
+    optional adu.common.header.Header header = 1;
+    optional bool estop = 2; //若为true则紧急制动，为false则什么都不做
+}
+
+message ParkingIn {
+    optional adu.common.header.Header header = 1;
+    optional string parking_id = 2 ;
+    optional adu.common.Point3D destination = 3;
+}
+
+message ParkingOut {
+    optional adu.common.header.Header header = 1;
+    optional adu.common.Point3D destination = 2;
+    optional double heading = 3;
+}
+
+message PadRoutingRequest {
+    optional adu.common.header.Header header = 1;
+    optional adu.common.Point3D start_point = 2;
+    optional adu.common.Quaternion start_point_orientation = 3;
+    required adu.common.Point3D end_point = 4;
+    optional bool broadcast = 5 [default = true];
+    repeated adu.common.Point3D way_point = 6;
+    optional adu.common.Quaternion end_point_orientation = 7;
+}
+
+message PadRoutingResponse {
+    optional adu.common.header.Header header = 1;
+    optional ErrorCode error_code = 2;
+    optional string error_msg = 3;
+    optional adu.common.router.RoutingResult routing_result = 4;
+}
+
+

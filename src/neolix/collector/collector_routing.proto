@@ -1,0 +1,11 @@
+syntax = "proto2";
+package adu.common.collector;
+
+message RoutingInfo {
+    optional double start_pose_x = 1;
+    optional double start_pose_y = 2;
+    optional double end_pose_x = 3;
+    optional double end_pose_y = 4;
+    optional double routing_distance = 5;
+    optional double timestamp_sec = 6;
+}

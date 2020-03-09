@@ -1,0 +1,57 @@
+syntax = "proto2";
+option java_multiple_files = true;
+package adu.hmi;
+
+
+// A general 3D point. Its meaning and units depend on context, and must be explained in comments.
+message Point3D {
+    optional double x = 1 [default = nan];
+    optional double y = 2 [default = nan];
+    optional double z = 3 [default = nan];
+}
+
+enum State {
+    INIT = 0;
+    CRUISE = 1;
+    WAIT = 2;
+    FINISH = 3;
+    PARKING_IN = 4;
+    PARKING_OUT = 5;
+    ESTOP = 6;
+}
+
+enum ResultCode {
+    RESULT_SUCCESS = 0;
+    RESULT_FAIL = 1;
+}
+
+message ParkingInContext {
+    optional string parking_id = 1;
+    optional adu.hmi.Point3D destination = 2;
+}
+
+message ParkingOutContext {
+    optional adu.hmi.Point3D destination = 1;
+    optional double heading = 2;
+}
+
+message FinishContext {
+    optional State last_state = 1;
+    optional ResultCode result_code = 2;
+}
+
+message Context {
+    oneof context {
+        FinishContext finish_context = 1;
+        ParkingInContext parking_in_context = 2;
+        ParkingOutContext parking_out_context = 3;
+    }
+}
+
+message SysState {
+    optional State state = 1;
+    optional double state_counter = 2;   
+    optional Context context = 3;
+}
+
+

@@ -1,0 +1,243 @@
+syntax = "proto2";
+
+package openapi.onboard;
+
+service OpenApiOnboardService {
+  rpc OpenAPIStream(stream RequestDataStream)
+      returns (stream ResponseDataStream) {}
+}
+
+// OpenAPI
+message Header {
+  required double timestamp_sec = 1;
+  required string req_id = 2;
+  optional string client_version = 3;
+}
+
+message ResponseResult {
+  enum ResultType {
+    SUCCESSFUL = 0;
+    FAILED = 1;
+    UNAUTHENTICATED = 2;
+    CONTROL_CONFLICT = 3;
+  }
+  required ResultType result_type = 1;
+  optional string msg = 2;
+}
+
+enum DataType {
+  AUTHENTICATION_TYPE = 0;
+  VEHICLE_TYPE = 1;
+  PILOT_TYPE = 2;
+  NOTIFY_TYPE = 3;
+  HEART_BEAT_TYPE = 4;
+};
+
+message RequestDataStream {
+  required Header header = 1;
+  required DataType request_type = 2;
+  oneof req_data {
+    AuthReq auth_req = 3;
+    VehicleReq vehicle_fetch_req = 4;
+    PilotReq pilot_req = 5;
+    RegisterNotifyReq register_notify_req = 6;
+  }
+}
+
+message ResponseDataStream {
+  optional Header header = 1;
+  required DataType response_type = 2;
+  required ResponseResult result = 3;
+  optional VehicleStatus vehicle_status = 4;
+  optional PilotResponse pilot_resp = 5;
+  optional NotifyData notify_data = 6;
+}
+
+// Auth
+message AuthReq { optional string vin = 1; }
+
+// Vehicle
+message VehicleReq {
+  enum VehicleReqType {
+    STATUS = 0;
+    CONTROL_SHUTDOWN = 1;
+  };
+  required VehicleReqType vehicle_req_type = 1;
+}
+
+message VehicleStatus {
+  enum TurnSignal {
+    TURN_NONE = 0;
+    TURN_LEFT = 1;
+    TURN_RIGHT = 2;
+  };
+  optional TurnSignal turn_signal = 1;
+  optional bool high_beam = 2;
+  optional bool low_beam = 3;
+  optional bool emergency_light = 4;
+  optional double battery_percent = 5;
+  optional bool self_check = 6;
+  optional string map_version = 7;
+  optional string software_version = 8;
+}
+
+// Pilot
+message Quaternion {
+  optional double qx = 1 [ default = nan ];
+  optional double qy = 2 [ default = nan ];
+  optional double qz = 3 [ default = nan ];
+  optional double qw = 4 [ default = nan ];
+}
+
+message UTMPoint {
+  required double x = 1;
+  required double y = 2;
+  optional double z = 3 [ default = 0.0 ];
+}
+
+message RoutingPoint {
+  required UTMPoint utm_point = 1;
+  required Quaternion quaternion = 2;
+  optional string point_name = 3;
+}
+
+message RoutingData {
+  required RoutingPoint current_point = 1;
+  required RoutingPoint end_point = 2;
+}
+
+message RoutingResponse {
+  repeated UTMPoint plan_path = 1;
+  optional double distance = 2;
+}
+
+message ParkingInData {
+  required RoutingPoint parking_point = 1;
+  required string parking_id = 2;
+}
+
+message ParkingOutData { required string parking_id = 1; }
+
+message ParkingResponse { required string parking_id = 1; }
+
+enum PilotType {
+  START_ROUTING = 0;
+  PARKING_IN = 1;
+  PARKING_OUT = 2;
+  LAUNCH = 3;
+  STOP = 4;
+  GO = 5;
+  STATUS = 6;
+  SWITCH_CONTROL = 7;
+};
+
+message PilotReq {
+  required PilotType pilot_type = 1;
+  oneof pilot_data {
+    RoutingData routing_data = 2;
+    ParkingInData parking_in_data = 3;
+    ParkingOutData parking_out_data = 4;
+  }
+}
+
+message PilotStatus {
+  optional double plan_mileage = 1;
+  optional double driving_range_mileage = 2;
+  optional double vehicle_speed = 3;
+  optional double vehicle_heading = 4;
+  optional UTMPoint vehicle_utm_pose = 5;
+  optional double battery_percent = 6;
+  optional double vehicle_acceleration = 7;
+  optional Quaternion current_quaternion = 8;
+}
+
+message PilotResponse {
+  required PilotType pilot_type = 1;
+  oneof resp_data {
+    RoutingResponse routing_resp = 2;
+    ParkingResponse parking_resp = 3;
+    PilotStatus pilot_status = 4;
+  }
+}
+
+// Notify
+enum NotifyType {
+  PIOLT = 0;
+  VECHILE = 1;
+  FAULT = 2;
+  OBSTACLE = 3;
+}
+
+message RegisterNotifyReq { repeated NotifyType register_type = 1; }
+
+message NotifyData {
+  enum PioltStatusNotify {
+    MANUAL_DRVING = 0;          
+    AUTO_DRIVING = 1;           
+    CONTROL_SWITCH = 2;         // change to auto drive
+    REACH_STATION = 3;         // reach station, process Parking
+    SELF_CHECK_SUCCESSFUL = 4;  
+    SELF_CHECK_FAIL = 5;        
+    AUTO_PNC_WAIT = 6;          // WAIT from globalstate
+    AUTO_PNC_ESTOP = 7;         // ESTOP from globalstate
+    PATROL_ERROR_STOP = 8;      
+    PATROL_ERROR_RESTORE = 9;   
+    PATROL_DISENGAGE_STOP = 10; 
+    ESTOP_FROM_PLANNING = 11;   // front obs detected, process estop
+    AUTO_PNC_FINISH = 12;       // FINISH from globalstate
+    PARK_IOV = 13;              // recv P, process Parking
+    VEHILCE_COLLISION = 14;     // Vehicle collision with obs
+    INVALID_POSITION = 15;      // current pos cannot start auto-drive
+    INVALID_HILL_START = 16;    // current pos cannot start auto-drive
+    HUMAN_TAKE_OVER = 17;       // human takeover
+  }
+  required NotifyType notify_type = 1;
+  oneof notify_data {
+    PioltStatusNotify piolt_notify_data = 2;
+    VehicleException vehicle_exception = 3;
+    PatrolException patrol_exception = 4;
+    ObstacleData obstacle_data = 5;
+  }
+}
+
+// notify vehicle
+message VehicleException {
+  enum ExceptionType { SENSOR = 0; }
+  required ExceptionType exception_type = 1;
+  required string msg = 2;
+}
+
+// notify patrol
+enum ErrLevel {
+  LEVEL_WARNING = 1; // warning
+  LEVEL_FATAL = 2;   // fatal
+  LEVEL_SERIOUS = 3; // serious
+}
+
+message PatrolItem {
+  required uint64 item_code = 1;
+  required string module_name = 2;
+  optional ErrLevel err_level = 3;
+  optional string err_msg = 4;
+  optional string err_operate = 5;
+}
+
+message PatrolException { repeated PatrolItem err_items = 1; }
+
+// notify obstacle
+enum ObstacleType {
+  UNKNOWN = 0;
+  UNKNOWN_MOVABLE = 1;
+  UNKNOWN_UNMOVABLE = 2;
+  PEDESTRIAN = 3; // Pedestrian.
+  BICYCLE = 4;    // bike, motor bike
+  VEHICLE = 5;    // Passenger car or truck.
+};
+
+message ObstacleItem {
+  optional ObstacleType obstacle_type = 1;
+  optional double theta = 2;
+  optional UTMPoint position = 3;
+}
+
+message ObstacleData { repeated ObstacleItem obstacle_items = 1; }

@@ -1,0 +1,46 @@
+syntax = "proto2";
+option java_multiple_files = true;
+package adu.hmi;
+import "hmi_common.proto";
+
+
+message HudInfo {
+    optional int32 index = 1;       // 站点索引
+    optional double distance = 2;   // 到index站距离
+    optional string scene = 3;      // 三种状态 未到站 -- 站点 -- 过站点
+    // 本次用户设置第一个目的地，用于UI初始化
+    optional int32 start_index = 4;
+    optional PolygonPoint position = 5;     // location of adc car
+    optional double heading = 6;            // heading of adc car
+    optional double speed = 7;              // speed in m/s
+    optional StationLine station_line = 8;
+}
+
+//后续会在HMIserver 新增一个接口，客户端主动获取，低频单次用户初始化UI用，全部站点绘制
+message StationLine {
+    optional double mile = 1;       //
+    optional double duration = 2;   //
+    repeated Station station = 3;   // 站点集合
+    // 仅车联网用户绘制流程曲线用
+    repeated PolygonPoint map_point = 4;
+}
+
+message Station {                   // 每个站点信息
+    optional int32 index = 1;       // 站点的索引
+    optional string name = 2;       // 站点名称
+    optional string type = 3;       // 表示起点 -- 经由点 -- 终点
+    repeated Media medias = 4;      // 每个站点 3~~6个，暂时用不着
+    optional PolygonPoint position = 5; // location of Station
+    // 仅车联网用户绘制流程曲线用
+    repeated PolygonPoint map_point = 6;
+}
+
+message Media {
+    optional string name = 1;
+    optional string type = 2;
+    optional string scene = 3;
+    optional string play_mod = 4;
+    optional string content = 5;
+    repeated string path =6;
+    optional int32 interval=7;
+}

@@ -1,0 +1,23 @@
+syntax = "proto2";
+package adu.common.perception;
+
+import "header.proto";
+
+message Point3D {
+    optional double x = 1;  // in meters.
+    optional double y = 2;  // in meters.
+    optional double z = 3;  // height in meters.
+}
+
+
+message ImpendingCollisionEdge {
+    optional int32 id = 1;  // edge ID.
+    repeated int32 cone_id_list = 2; // cone ID.
+    repeated Point3D point = 3; 
+    optional double tracking_time = 4;  // duration of an obstacle since detection in s.
+}
+
+message ImpendingCollisionEdges {
+    repeated ImpendingCollisionEdge impending_collision_edge = 1;  // An array of obstacles
+    optional adu.common.header.Header header = 2;  // Header
+}

@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package adu.common.collector;
+import "data_worker_common.proto";
+
+message DatainfoRequest {               // Query Disengage List and Data List
+    enum DataQueryCmd {
+        QUERY_ALL = 0;                  // query all info
+        QUERY_DATAINFO = 1;             // query data info
+        QUERY_DISENGAGEINFO = 2;        // query disengage info
+    }    
+    required DataQueryCmd dataquery_cmd = 1;        // command
+    optional int32 start_time = 2;      // starttime of data query
+    optional int32 end_time = 3;        // endtime of data query
+}
+
+message DisengageInfo {
+    optional KeyDataType keydata_type = 1;  // critical_disengage/sos/accident
+    optional int32 key_timestamp = 2;       // disengage timestamp
+}
+
+message DataInfo {
+    optional int32 key_start_time = 1;      // critical_disengage/sos/accident
+    optional int32 key_end_time = 2;        // disengage timestamp
+}
+
+message DatainfoResponse {              // Query Disengage List and Data List
+    required double timestamp = 1;      // the timestamp of response msg
+    required ErrorCode code = 2;            // response code of api
+    repeated DisengageInfo disengage_info = 3;  // disengage info, [(key_type, key_timestamp), ...]
+    repeated DataInfo data_info = 4;            // data info, [(key_start_time, key_end_time), ...]
+}

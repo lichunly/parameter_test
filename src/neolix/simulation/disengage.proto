@@ -1,0 +1,11 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "header.proto";
+
+// The disengage message containing the reason.
+message Disengage {
+  optional .adu.common.header.Header header = 1;
+  required string flag = 2 [default = "1"];
+}
+

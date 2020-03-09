@@ -1,0 +1,8 @@
+syntax = "proto2";
+package adu.common.monitor;
+
+message FileExist {
+    optional bool map_service = 1;
+    optional bool calibration_yaml = 2;
+    optional bool reflection_map = 3;
+}

@@ -1,0 +1,63 @@
+// Defines the GRPC interfaces of the Calibration Service.
+
+syntax = "proto2";
+
+package adu.calibration;
+
+option java_multiple_files = true;
+option cc_generic_services = false;
+
+import "calibration_common.proto";
+
+service CalibrationGrpcService {
+    // get vin code
+    rpc GetVinCode (GetVinCodeRequest) returns (VinCode) {}
+
+    // set distance between left-front wheel and stop rod
+    rpc SetVehicleLocation (VehicleLocation) returns (StatusResponse) {}
+    
+    // check ultrasonic radar installation ID status
+    rpc CheckUltrasonicRadarID (stream CheckURIDRequest) returns (stream CheckURIDResponse) {}
+
+    // save ultrasonic radar ID status
+    rpc SaveUltrasonicRadarID (SaveURIDRequest) returns (StatusResponse) {}
+
+    // check sensor installation status
+    rpc CheckSensorStatus (CheckRequest) returns (SensorStatus) {}
+
+    // adjust sensor position
+    rpc AdjustSensorPosition (stream AdjustRequest) returns (stream AdjustResponse) {}
+
+    // check sensor position
+    rpc CheckSensorPosition (CheckRequest) returns (StatusResponse) {}
+
+    // start sensor calibration
+    rpc StartSensorCalibration (StartRequest) returns (stream CalibrationResponse) {}
+
+    // get calibration result
+    rpc GetCalibrationResult (GetResultRequest) returns (CalibrationResult) {}
+
+    // get localization status
+    rpc GetLocalizationStatus (CheckRequest) returns (stream LocalizationResponse) {}
+
+    // start 8-route-calibration
+    rpc StartEightRouteCalibration (StartRequest) returns (stream CalibrationResponse) {}
+
+    // start slow-calibration
+    rpc StartSlowCalibration (StartRequest) returns (stream CalibrationResponse) {}
+
+    // start straight-calibration
+    rpc StartStraightCalibration (StartRequest) returns (stream CalibrationResponse) {}
+
+    // start 8-route-driving
+    rpc StartEightRouteDriving (StartRequest) returns (stream DrivingResponse) {}
+
+    // start straight-driving
+    rpc StartStraightDriving (StartRequest) returns (stream DrivingResponse) {}
+
+    // start offline 8-route-calibration
+    rpc StartEightRouteCalibrationOffline (StartOffline) returns (stream CalibrationResponse) {}
+
+    // start offline straight-calibration
+    rpc StartStraightCalibrationOffline (StartOffline) returns (stream CalibrationResponse) {}
+}

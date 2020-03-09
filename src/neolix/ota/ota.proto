@@ -1,0 +1,51 @@
+syntax = "proto2";
+package adu.ota;
+ 
+enum RequestType {
+    OTA2HMI_HAS_UPGRADE = 0;            //有安装包可升级
+    OTA2HMI_HAS_EMERGENCY_UPGRADE = 1;  //有紧急包可升级
+    HMI2OTA_START_UPGRADE = 2;          //紧急模式时，确认升级消息
+    HMI2OTA_GET_UPGRADE_RESULT = 3;     //获取升级结果
+    HMI2OTA_CHECK_AND_UPGRADE = 4;      //已废弃
+    HMI2OTA_CHECK_CURRENT_VERSION = 5;  //获取当前版本信息
+    HMI2OTA_HAS_UPGRADE_DESCRIPTION = 6;//获取更新内容,HMI开机发送的第一个消息
+    HMI2OTA_HAS_OPER_UPGRADE = 7;     //是否有安装包可升级
+    HMI2OTA_OPER_UPGRADE_INSTALL = 8; //确认安装包
+    HMI2OTA_OPER_UPGRADE_IGNORE = 9;  //忽略安装包
+}
+ 
+enum OtaStatus {
+    OK = 0;
+    ERROR = 1;
+    TIMEOUT = 2;
+    UNKNOWN = 3;
+    CONNECT = 4;
+}
+
+enum UpgradeStatus {
+    FINISH = 0;
+    FAILED = 1;
+    NEW = 2;
+}
+
+message UpgradeInfo {
+    optional string type = 1;
+    optional string tag = 2;
+    optional UpgradeStatus status = 3;
+    optional string time_used = 4;
+    optional string soft_version = 5;
+    optional string external_version = 6;
+    optional string description = 7;
+    optional string install_date = 8;
+    optional bool include_sensorbox_update = 9;
+}
+
+message OtaRequest {
+    required RequestType action = 1;
+    optional UpgradeInfo info = 2;
+}
+ 
+message OtaResponse {
+    required OtaStatus status = 1;
+    optional UpgradeInfo info = 2;
+}

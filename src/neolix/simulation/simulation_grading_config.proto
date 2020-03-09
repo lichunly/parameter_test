@@ -1,0 +1,8 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "simulation_metric.proto";
+
+message GradingConfig {
+  repeated Metric metric = 1;
+}

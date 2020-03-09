@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package adu.common.collector;
+
+message TaskidRequest 
+{
+    required double trigger_timestamp = 1;    // task trigger timestamp
+}
+
+message TaskidResponse {
+    required bool ack = 1 [default = true];    // ACK of StateCollector
+    optional string taskid = 2;
+}
+
+service TaskidService {
+    rpc GetTaskid (TaskidRequest) returns (TaskidResponse) {}
+}
+

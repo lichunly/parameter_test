@@ -1,0 +1,35 @@
+/**@copyright 2017 Baidu Inc. All Rights Reserved.
+ * @file sensor_radar.proto
+ * @brief The protobuf interface for Radar data.
+ *
+ * @author Wang Baofeng (wangbaofeng@baidu.com)
+ */
+ syntax = "proto2";
+package adu.common.sensor;
+
+import "header.proto";
+
+message Ultrasonic{
+//
+//               x axis
+//		       ^
+//                     |
+//                  *  |  *                           
+//               *     |     *                
+//        \    *       |       *    /
+//          \ *     range(i)    * /   
+//            \        |        /   
+//              \      |      /
+//                \    |    /
+//       y axis     \  |  / 
+//      <---------------
+//        ooooooooooooo   //ulrasonic radar front surface
+//
+// In erery working cycle, each radar of the ultrasonic system 
+// return a range to form a range array, 'ranges'. 
+
+    optional adu.common.header.Header header = 1;
+    repeated float ranges = 2;
+    repeated bool status = 3;
+}
+

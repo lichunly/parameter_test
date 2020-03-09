@@ -1,0 +1,14 @@
+syntax = "proto2";
+package adu.simulation;
+
+// Next-id: 4
+message PolygonPoint {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3 [default = 0.0];
+}
+
+// The response message
+message UpdateStatus {
+  required bool updated = 1 [default = false];
+}

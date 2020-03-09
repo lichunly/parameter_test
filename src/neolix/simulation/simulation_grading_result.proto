@@ -1,0 +1,29 @@
+syntax = "proto2";
+package adu.simulation;
+
+// Next-id: 3
+message GradingResult {
+  optional bool is_pass = 1;
+  repeated MetricGradingResult metric_result = 2;
+}
+
+// Per metric grading results.
+// Next-id: 5
+message MetricGradingResult {
+  optional string name = 1;
+  optional string description = 2;
+  optional bool is_pass = 3;
+
+  message DetailedResult {
+    optional double timestamp = 1;
+    optional bool is_pass = 2;
+    optional DebugInfo debug = 3;
+  }
+  repeated DetailedResult detailed_result = 4;
+}
+
+// Next-id: 2
+message DebugInfo {
+  repeated string obj_id = 1;
+  optional string description = 2;
+}

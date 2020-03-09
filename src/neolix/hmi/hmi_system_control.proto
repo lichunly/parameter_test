@@ -1,0 +1,40 @@
+// Defines the system control module function request & response message
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+import "hmi_common.proto";
+import "hmi_error_code.proto";
+
+enum SystemControlType {
+    REBOOT = 1;
+    SHUTDOWN = 2;
+    POWEROFF = 3;
+    MOVELOG = 4;
+}
+
+enum TransferControlOwner {
+    PNC = 1;
+    PATROL = 2;
+}
+
+// The request message of ShutdownSystem api
+message SystemControlRequest {
+    required SystemControlType type = 1;     // control type
+}
+
+// The request message of ShutdownSystem api
+message SystemControlResponse {
+    required ErrorCode code = 1;    // auto out point of garage
+}
+
+// The request message of TransferSystemControl api
+message TransferControlRequest {
+    required TransferControlOwner owner = 1;  // transfer target owner
+}
+
+// The response message of TransferSystemControl api
+message TransferControlResponse {
+    required ErrorCode code = 1;
+}

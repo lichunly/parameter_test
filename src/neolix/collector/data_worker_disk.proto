@@ -1,0 +1,36 @@
+syntax = "proto2";
+
+package adu.common.collector;
+import "data_worker_common.proto";
+
+message DevicePackage {                 // Query Disk List
+    required double timestamp = 1;      // the timestamp of response msg
+    required ErrorCode code = 2;            // response code of api
+    optional DiskStatus diskstatus = 3; // disk status
+}
+
+message Disk {
+    enum DiskType {
+        INTERNAL = 0;   // INTERNAL Disk
+        EXTERNAL = 1;   // EXTERNAL Disk
+    }        
+    required DiskType disktype = 1;     // DiskType
+    required double capacity = 2;       // 0.85 = 85%, disk capacity
+    optional string filesystem = 3;     // /dev/sdb
+    optional string mounted_on = 4; // /home/caros/media/nvme2
+    optional double size = 5;       // 2048 GB
+    optional double used = 6;       // 1000 GB
+    optional double avail = 7;      // 1048 GB
+}
+
+message DiskStatus {
+    repeated Disk disk = 1;             // disk
+}
+
+message FetchCmds {                     // Query Disk List
+    enum FetchDeviceType {
+        ALL = 0;
+        DISK = 1;
+    }    
+    repeated FetchDeviceType devices = 1; 
+}

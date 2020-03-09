@@ -1,0 +1,179 @@
+syntax = "proto2";
+
+// package adu.closeloop;
+package adu.workers.closeloop;
+
+// obstacle position in the world coordinate system
+message Point {
+    optional double x = 1;  // in meters.
+    optional double y = 2;  // in meters.
+    optional double z = 3;  // height in meters.
+}
+// orientation  for cal heading
+message Orientation {
+    optional double qx = 1;
+    optional double qy = 2;
+    optional double qz = 3;
+    optional double qw = 4;
+}
+// Params for Localization Testing
+message LocalizationParams {
+    // position of parkinglot
+    optional Point parkinglot_point = 1;
+    optional Orientation orientation = 2;
+    // vehicle offset
+    optional double frontwheel_to_front = 3;
+    optional double frontwheel_to_right = 4;
+    optional double backwheel_to_front = 5;
+    optional double backwheel_to_right = 6;
+    // threshold
+    optional double threshold_point = 7;
+    optional double threshold_heading = 8;
+}
+
+// Result for Localization Testing
+message LocalizationResult {
+    optional double diff_point = 1;
+    optional double diff_heading = 2;
+}
+
+// Params for Perception Testing
+message PerceptionParams {
+    // position of obstacle
+    optional Point obstacle_point = 1;
+    optional double obstacle_heading = 2;
+    optional double threshold_point = 3;
+    optional double threshold_heading = 4;
+}
+
+// Result for Perception Testing
+message PerceptionResult {
+    // diff of vehicle_point and perception_point
+    optional double diff_point = 1;
+    // diff of vehicle_theta and perception_theta
+    optional double diff_heading = 2;
+}
+
+// Params for ParkingIn Testing
+message ParkingInParams {
+    // position of parkinglot
+    optional Point parkinglot_point = 1;
+    optional Orientation orientation = 2;
+    // size of parkinglot
+    optional double width = 3;
+    optional double length = 4;
+    // threshold
+    optional double threshold_point = 5;
+    optional double threshold_heading = 6;
+}
+
+// Result for ParkingIn Testing
+message ParkingInResult {
+    optional double diff_meter = 1;
+    optional double diff_heading = 2;
+}
+
+// Params for ParkingOut Testing
+message ParkingOutParams {
+    // position of parkinglot
+    optional Point parkinglot_point = 1;
+    optional Orientation orientation = 2;
+    // size of parkinglot
+    optional double width = 3;
+    optional double length = 4;
+    // threshold
+    optional double threshold_point = 5;
+    optional double threshold_heading = 6;
+}
+
+// Result for ParkingOut Testing
+message ParkingOutResult {
+    optional double diff_meter = 1;
+    optional double diff_heading = 2;
+}
+
+// Params for ParkingStation Testing
+message ParkingStationParams {
+    // position of station
+    optional Point parkingstation_point = 1;
+    optional Orientation orientation = 2;
+    optional double threshold_meter = 3;
+    // threshold
+    optional double threshold_point = 5;
+    optional double threshold_heading = 6;
+}
+
+// Result for ParkingStation Testing
+message ParkingStationResult {
+    // localization diff in meters
+    optional double diff_meter = 1;
+    // distance from vehicle to road-edge
+    optional double roadedge_meter = 2;
+    // heading in the world coordinate system
+    optional double diff_heading = 3;
+}
+
+// Basic Params for Turning/STurning/StraightLine Testing
+message BasicParams {
+    // crosswise deviation
+    optional double threshold_meter = 1;
+}
+
+// Basic Result for Turning/STurning/StraightLine Testing
+message BasicResult {
+    // check whether vehicle off road
+    optional double offroad_meter = 1;
+    // crosswise deviation
+    optional double diff_meter = 2;
+}
+
+// Params for Ascent Testing
+message AscentParams {
+    // position of mid-ascent point
+    optional Point ascent_point = 1;
+    // vehicle fall back less than 0.2 meters
+    optional double threshold_fallback_meter = 2;
+}
+
+// Result for Ascent Testing
+message AscentResult {
+    // vehicle fall back less than 0.2 meters
+    optional double fallback_meter = 1;
+    optional bool is_stop = 2;
+}
+
+// Params for SpeedBump Testing
+message SpeedBumpParams {
+    // position of speed bump point
+    optional Point speedbump_point = 1;
+    // vehicle speed less than 14km/s
+    optional double threshold_speed_mps = 3;
+}
+
+// Result for SpeedBump Testing
+message SpeedBumpResult {
+    // vehicle speed less than 14km/s
+    optional double speed_mps = 1;
+}
+
+// Params for Nudge Testing
+message NudgeParams {
+    // position of obstacle point
+    optional Point obstacle_point = 1;
+}
+
+// Result for Nudge Testing
+message NudgeResult {
+    // disengage for reserve
+    optional double disengage = 1;
+}
+
+message XingParams {
+    optional Point xing_point = 1;
+    optional double threshold_speed_mps = 2;
+}
+message XingResult {
+    optional double speed_mps = 1;
+}
+
+

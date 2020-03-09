@@ -1,0 +1,83 @@
+// Defines the driving control module function request & response message
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+import "hmi_common.proto";
+import "hmi_error_code.proto";
+import "global_adc_status.proto";
+
+
+// The request message of StopAndGo api.
+
+enum CmdType {
+    GO = 1;
+    STOP = 2;
+    STOP_STRAIGHT = 3;
+}
+
+message SwitchCarStateRequest {
+    required CmdType start = 1;
+}
+
+// The request & response message of CheckPositionStatus api.
+message PositionStatusRequest {
+    required PolygonPoint position = 1;
+}
+
+message PositionStatusResponse {
+    enum Status {
+        ON_MAP = 0;
+        OUT_OF_MAP = 1;
+    }
+
+    required ErrorCode code = 1;
+    optional string info = 2;
+    optional Status data = 3;
+}
+
+// The request & response message of CheckParkingRelation api.
+message ParkingRelationRequest {
+    required PolygonPoint position = 1;     // position of adc car
+    required double heading = 2;
+    required PolygonPoint parking_space_point = 3;  // center point of parking space
+}
+
+message ParkingRelationResponse {
+    enum Relation {
+        IN_PARKING_SPACE = 0;
+        OUT_OF_PARKING_SPACE = 1;
+    }
+
+    required ErrorCode code = 1;
+    optional Relation relation = 2;
+}
+
+// The request message of AutoParking api
+message AutoParkingRequest {
+    optional string id = 1;     // id of parking space, optional
+    required PolygonPoint park_point = 2;   // center point of parking space
+}
+
+// The request message of AutoOutGarage api
+message AutoOutGarageRequest {
+    required PolygonPoint station_point = 1;    // auto out point of garage
+}
+
+// The content of DisengageTypeFeedback api
+message DisengageTypeContent {
+    enum DisengageType {
+        CRITICAL = 0;
+        UNCRITICAL = 1;
+        ABORT = 2;
+    }
+
+    required double timestamp = 1;
+    required DisengageType type = 2;
+    optional string uuid = 3;
+}
+
+message InterveneRequest {
+    required adu.common.status.UserCustomMessage params = 1;
+}

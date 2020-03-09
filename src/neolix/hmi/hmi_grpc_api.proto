@@ -1,0 +1,100 @@
+// Defines the GRPC interfaces of the HMI Service.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+import "hmi_fetch_msg.proto";
+import "hmi_common.proto";
+import "map.proto";
+import "hmi_routing.proto";
+import "hmi_driving_control.proto";
+import "hmi_car_device.proto";
+import "patrol_result.proto";
+import "hmi_hudinfo.proto";
+import "hmi_launch.proto";
+import "hmi_ota.proto";
+import "hmi_world.proto";
+import "hmi_collect_data.proto";
+import "hmi_system_control.proto";
+import "ota.proto";
+import "hmi_map_info.proto";
+import "hmi_localization_init.proto";
+
+service HMIGrpcService {
+    // Fetch-API
+    // fetch basic message package
+    rpc FetchSectionMsg (FetchKeys) returns (WorldPackage) {}
+
+    // fetch hdmap for display
+    rpc FetchMapElement (MapFileRequest) returns (MapFileResponse) {}
+    rpc FetchMapVersion (MapVersionRequest) returns (MapVersionResponse) {}
+
+    // fetch safety check result for once
+    rpc FetchSafeCheckResult (SafeCheckRequest) returns (SafeCheckResponse) {}
+
+
+    // Control-APIs
+    // system check & control
+    rpc ShutdownSystem (SystemControlRequest) returns (SystemControlResponse) {}
+    rpc TransferSystemControl (TransferControlRequest) returns (TransferControlResponse) {}
+
+    // routing control
+    rpc PreRouting(RoutingRequest) returns (RoutingResponse) {}
+    rpc StartRouting (RoutingRequest) returns (RoutingResponse) {}
+
+    // driving control
+    rpc Launch (LaunchRequest) returns (LaunchResponse) {}
+    rpc Disengage (DisengageRequest) returns (DisengageResponse) {}
+    rpc StopAndGo (SwitchCarStateRequest) returns (StatusResponse) {}
+    rpc CheckPositionStatus (PositionStatusRequest) returns (PositionStatusResponse) {}
+    rpc CheckParkingRelation (ParkingRelationRequest) returns (ParkingRelationResponse) {}
+    rpc AutoParking (AutoParkingRequest) returns (StatusResponse) {}
+    rpc AutoOutGarage (AutoOutGarageRequest) returns (StatusResponse) {}
+
+    // driving intervene
+    rpc Intervene(InterveneRequest) returns (StatusResponse) {}
+
+    // disengage feedback
+    rpc DisengageTypeFeedback(DisengageTypeContent) returns (StatusResponse) {}
+
+    // car device control
+    rpc SwitchDoor (DeciveControlRequest) returns (StatusResponse) {}
+    rpc SwitchHeadLights (DeciveControlRequest) returns (StatusResponse) {}
+    rpc SwitchFrontLamp (DeciveControlRequest) returns (StatusResponse) {}
+    rpc SwitchEmergencyLamp (DeciveControlRequest) returns (StatusResponse) {}
+    rpc SwitchCourtesyLamp (DeciveControlRequest) returns (StatusResponse) {}
+    rpc NotiAirCondition (AirConditionRequest) returns (StatusResponse) {}
+    rpc TriggerAlarmHorn (TriggerRequest) returns (StatusResponse) {}
+    rpc TriggerEmergencyStop (TriggerRequest) returns (StatusResponse) {}
+    // TODO(shenglin): horn & SOS api define
+
+    // set info from panel 2 hud
+    rpc SetHudInfo(HudInfo) returns (StatusResponse) {}
+
+    // ota request from panel app
+    rpc NotiOTAClient(OtaRequest) returns (OtaResponse) {}
+
+    // collection mode
+    rpc FetchCollectDataMsg(FetchCollectDataKey) returns (FetchCollectDataPackage) {}
+    rpc NotiWorkingState(WorkStationRequest) returns (StatusResponse) {}
+    rpc NotiDataCheck(DataCheckRequest) returns (DataCheckResult) {}
+    rpc SwitchCollectMode(CollectingStateRequest) returns (StatusResponse) {}
+
+    // preprocess mode
+    rpc FetchPreProcTaskStatus(FetchPreProcTaskRequest) returns (PreProcTaskResult) {}
+
+    // calibration validity
+    rpc CheckCalibrationValidity (CalibrationValidityRequest) returns (CalibrationValidityResponse) {}
+    
+    // ota info transfer 
+    rpc StreamOtaToHmi (stream adu.ota.OtaRequest) returns (stream adu.ota.OtaResponse) {}
+    rpc StreamHmiToOta (stream adu.ota.OtaResponse) returns (stream adu.ota.OtaRequest) {}
+
+    //noti assist localization init pose
+    rpc NotiLocalizationInitPose (PositionAndHeading) returns (LocalInitRes) {}
+        // move log
+    rpc MoveLogSync (SystemControlRequest) returns (SystemControlResponse) {}
+
+}
+

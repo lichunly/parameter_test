@@ -1,0 +1,49 @@
+// Defines the proto of CalibratorWorker.
+
+syntax = "proto2";
+package adu.workers.calibrator;
+
+option java_multiple_files = true;
+
+// Common enums
+enum ErrorCode {
+    // common
+    OK = 0;
+    ERROR_INVALID_REQUEST = 1;
+
+    // CameraLidarCalibrate: 10x
+    ERROR_PARAMETERS_INVALID = 101; // cybertron params & worker config file error
+    ERROR_CALIBRATE_FAIL = 102;     // calibrate error
+}
+
+enum CmdType {
+    START = 1;
+    CHECK = 2;
+    STOP = 3;
+}
+
+enum CameraType {
+    SMARTEREYE = 1;
+    LEFT_FORWARD = 2;
+    LEFT_BACK = 3;
+    RIGHT_FORWARD = 4;
+    RIGHT_BACK = 5;
+    REAR = 6;
+}
+
+enum LidarType {
+    LEFT = 1;
+    RIGHT = 2;
+    BACK = 3;
+    FUSION = 4;
+}
+
+// CameraLidarCalibrate API
+message CameraLidarCalibrateRequest {
+    required CmdType cmd = 1;
+}
+
+message CameraLidarCalibrateResponse {
+    required ErrorCode code = 1;
+    optional double progress = 2;
+}

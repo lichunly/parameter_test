@@ -1,0 +1,41 @@
+syntax = "proto2";
+package adu.simulation;
+
+message MainConf {
+  //node name
+  optional string node_name = 1;
+  //simulation timer duration
+  optional double timer_duration = 2 [default = 0.1];
+  //adc status topic
+  optional string adc_status_topic = 3;
+  //perception obstacles array topic
+  optional string obs_topic = 4;
+  //perception traffic lights topic
+  optional string traffic_light_topic = 5;
+  //scenario switch
+  optional int32 scenario_switch = 6 [default = 0];
+  //scenario conf file
+  optional string scenario_conf = 7;
+  //scenario topic
+  optional string scenario_topic = 8;
+  //log location
+  optional string log_location = 9;
+  //routing result topic
+  optional string routing_result_topic = 10;
+  //red light time
+  optional double red_time = 11 [default = 15.0];
+  //green light time
+  optional double green_time = 12 [default = 13.0];
+  //yellow light time
+  optional double yellow_time = 13 [default = 3.0];
+  //traffic light time switch
+  optional int32 traffic_light_time_switch = 14 [default = 0];
+  //avoid collision switch
+  optional int32 avoid_collision_switch = 15 [default = 1];
+  //rosparam trigger
+  optional int32 rosparam_trigger_switch = 16 [default = 0];
+  //rosparam trigger name
+  optional string rosparam_trigger_name = 17 [default = "/record_rosbag"];
+  //scenario_extra conf file
+  optional string scenario_extra_conf = 18 [default = "/home/caros/adu_data/simulation/scenario.conf"];
+}

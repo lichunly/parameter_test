@@ -1,0 +1,7 @@
+<cyber>
+    <module>
+        <name>parameter_test</name>
+        <dag_conf>parameter_test.dag</dag_conf>
+        <process_name>parameter_test</process_name>
+    </module>
+</cyber>

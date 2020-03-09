@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+// package adu.closeloop;
+package adu.workers.closeloop;
+
+message HDMapParams {
+    required double nearest_s = 1;
+    required double nearest_l = 2;
+    required double left_width = 3;
+    required double right_width = 4;
+}
+
+// service HDMapService {
+//     // GetNearestLane
+//     rpc GetNearestLane (Point) returns (TwoDoubleParams) {}
+//     // GetWidth
+//     rpc GetWidth (OneDoubleParams) returns (TwoDoubleParams) {}
+// }
+

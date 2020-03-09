@@ -1,0 +1,91 @@
+syntax = "proto2";
+
+package adu.common.collector;
+import "data_worker_common.proto";
+
+enum TaskType {
+    DATA_UPLOAD = 0;         // upload
+    DATA_BACKUP = 1;         // backup
+    DATA_DELETE = 2;         // delete
+    DATA_UPDATE = 3;         // update
+}    
+
+message UpdateParams {
+    // 'abort' | 'non_critical_disengage' | 'critical_disengage'
+    required string disengage_type = 1;
+  
+    // uuid for data event
+    required string task_id = 2;        // uuid for data event 
+}
+
+message UpdateResult {
+    required string task_id = 1;            // task_id
+    optional string record_task_id = 2;
+}
+
+message UploadParams {
+    enum CmdType {
+        START = 0;
+        CHECK = 1;
+        // STOP = 2;
+    }    
+    required CmdType cmd_type = 1;      // start, check or stop
+    // start
+    optional int32 start_time = 2;      // starttime of upload data
+    optional int32 end_time = 3;        // endtime of upload data
+    repeated string topics = 4;         // topics
+    repeated string logs = 5;           // log files
+    // check or stop
+    optional string task_id = 6;        // task_id for check or stop
+    optional string disengage_type = 7;
+}
+
+message UploadResult {
+    required string task_id = 1;            // task_id of upload task, KL037_20181030154149
+
+    enum TASK_STATUS {
+        RECORDER_ONGOING = 0;                 // record ongoing
+        RECORDER_COMPLETE = 1;                // record complete
+        PREPROCESS_ONGOING = 2;             // preprocess ongoing
+        PREPROCESS_COMPLETE = 3;            // preprocess complete
+        TRANSFER_ONGOING = 4;               // transfer ongoing
+        TRANSFER_COMPLETE = 5;              // transfer complete
+    }
+    optional TASK_STATUS task_status = 2;       // task status
+    optional string record_task_id = 3;
+}
+
+message BackupParams {
+    required int32 keydata_timestamp = 1;       // timestamp of critical_disengage or sos
+}
+
+message BackupResult {
+    required string task_id = 1;                // task_id, KL037_20181030154149
+}
+
+message DeleteParams {
+    required string task_id = 1;                // task_id, KL037_20181030154149
+}
+
+message DeleteResult {
+    required string task_id = 1;                // task_id, KL037_20181030154149
+}
+
+message Task {
+    required TaskType task_type = 1;            // task type
+    required KeyDataType keydata_type = 2;      // critical_disengage/sos/accident
+    optional UploadParams upload = 3;
+    optional BackupParams backup = 4;
+    optional DeleteParams delete = 5;
+    optional UpdateParams update = 6;
+}
+
+message TaskResult {
+    required double timestamp = 1;              // the timestamp of response msg
+    required ErrorCode code = 2;
+    required TaskType task_type = 3;            // task type
+    optional UploadResult upload = 4;
+    optional BackupResult backup = 5;
+    optional DeleteResult delete = 6;
+    optional UpdateResult update = 7;
+}

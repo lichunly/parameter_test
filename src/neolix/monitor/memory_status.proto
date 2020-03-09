@@ -1,0 +1,7 @@
+syntax = "proto2";
+package adu.common.monitor;
+
+message MemoryStatus {
+    optional int32 mem_size = 1;
+    optional int32 level = 2;
+}

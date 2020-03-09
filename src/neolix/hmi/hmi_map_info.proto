@@ -1,0 +1,48 @@
+// Defines the message about obstacle show demand.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+import "hmi_error_code.proto";
+import "map.proto";
+
+enum MapType {
+    BACKGROUND_PNG = 0;
+    BASE_MAP_BIN = 1;
+    LABEL_DATA_LB1 = 2;
+    MAP_JSON = 3;
+    NEW_ROUTING_MAP_BIN = 4;
+    SIM_MAP_BIN = 5;
+}
+
+message TypeMessage {
+    required MapType map_type = 1;
+}
+
+
+// The request message of display map, empty for temporary scheme
+message MapFileRequest {
+    repeated TypeMessage type_msgs = 1;
+}
+
+message BaseMapBin {
+    required ErrorCode code = 1;
+    optional adu.common.hdmap.Map base_map_bin = 2;
+}
+
+message BackGroundPng {
+    required ErrorCode code = 1;
+    optional bytes background_png = 2;
+}
+
+message MapJson {
+    required ErrorCode code = 1;
+    optional bytes map_json = 2;
+}
+
+message MapFileResponse {
+	optional BaseMapBin base_map_bin_msg = 1;
+	optional BackGroundPng background_png_msg = 2;
+	optional MapJson map_json_msg = 3;
+}

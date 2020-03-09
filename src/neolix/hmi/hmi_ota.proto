@@ -1,0 +1,72 @@
+// Defines the message about obstacle show demand.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+import "hmi_error_code.proto";
+
+// ota status saved memory
+message OTAClientStatus {
+    //普通版本信息
+    optional bool new_version = 1; // 是否存在待升级版本（自检过程中，普通版本）
+    optional double new_version_counter = 2;   
+    optional UpgradeInfo new_version_info = 3; //ota 服务器通知普通升级信息
+    optional NewVersionUpdateMode new_version_update_mode = 4; //ota 普通升级信息的状态信息  
+    optional double new_version_timestamp = 5; 
+    //紧急版本信息
+    optional bool emergency_upgrade = 6; // 是否存在紧急版本（行驶过程中，紧急版本）
+    optional double emergency_upgrade_counter = 7;   
+    optional UpgradeInfo emergency_version_info = 8; //从ota 服务器通知紧急版本升级信息    
+    optional double emergency_timestamp = 9; 
+    //是否有开机明示信息
+    optional UpgradeInfo upgrade_info = 10;
+}
+
+enum UpgradeStatus {
+    OTA_FINISH = 0;
+    OTA_FAILED = 1;
+    OTA_NEW = 2;
+}
+
+message UpgradeInfo {
+    optional string type = 1;
+    optional string tag = 2;
+    optional UpgradeStatus status = 3;
+    optional string time_used = 4;
+    optional string soft_version = 5;
+    optional string external_version = 6;
+    optional string description = 7;
+    optional string install_date = 8;
+    optional bool include_sensorbox_update = 9;
+}
+
+enum RequestType {
+    START_UPGRADE = 0; //确认开始升级(hmi通知ota开始升级)
+    GET_UPGRADE_RESULT = 1; //获得升级结果(hmi向ota获得升级结果),同步返回
+    CHECK_AND_UPGRADE = 2; //检查是否存在新版本需要升级(hmi通知ota到达运营点),同步返回
+    CHECK_CURRENT_VERSION = 3; //检查当前版本(hmi请求ota获得当前金龙和外部版本),同步返回
+    HAS_UPGRADE_DESCRIPTION = 4; //通知明示上次升级的内容（hmi启动后请求ota是否存在需要明示的信息, 开机启动的时候检查, server发送，app不需要发送
+    HAS_OPER_UPGRADE = 5;     //是否有安装包可升级
+    OPER_UPGRADE_INSTALL = 6; //确认安装包
+    OPER_UPGRADE_IGNORE = 7;  //忽略安装包
+}
+
+enum NewVersionUpdateMode{
+    UPDATE_INIT = 0;
+    UPDATE_ING = 1;
+    UPDATE_SUCCESS = 2;
+    UPDATE_FAILED = 3;
+    UPDATE_TIMEOUT = 4;
+}
+
+message OtaRequest {
+    required RequestType action = 1;
+    optional string tag = 2; //本次服务升级需要发送给ota服务器的信息, 只在START_UPGRADE(即紧急升级)时需要, 需要tag字段来表示本次升级的版本
+}
+
+message OtaResponse {
+	required ErrorCode code = 1;
+	optional string content = 2;
+    optional UpgradeInfo info = 3; //请求当前版本(CHECK_CURRENT_VERSION/)，或是安装状态(GET_UPGRADE_RESULT)时,是否有安装包可升级(HMI2OTA_HAS_OPER_UPGRADE),ota client的response里面会回传本参数
+}

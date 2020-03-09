@@ -1,0 +1,10 @@
+// Defines the GRPC interfaces of the Routing Service.
+syntax = "proto2";
+package adu.common.routing;
+
+import "routing.proto";
+
+// The signature of the RPC service, provided by the Decision module.
+service RPC {
+    rpc RunRouter(RoutingRequest) returns (RoutingResult) {}
+}

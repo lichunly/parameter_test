@@ -1,0 +1,15 @@
+syntax = "proto2";
+package adu.common.coral;
+
+message PncOpenParams {
+    optional double lidar_max_valid_distance = 1;   // 1线有效距离 lms_lidar_valid_distance
+    optional double pass_max_safe_distance = 2; // 车两边的安全距离 pass_safe_distance
+    optional bool ignore_solid_line = 3;// 是否可以压实现
+    optional bool enable_ultrasonic = 4;    // 超声波是否开启数据处理
+    optional bool enable_nudge = 5;     // 分场景nudge
+    optional double ultrasonic_valid_speed = 6; // 超声波最小速度，小于本速度开启
+    optional double ultrasonic_valid_distance = 7;  // 有效距离
+    optional double dp_st_max_speed = 8;    // 限速（speed cost）
+    optional double dp_st_boundary_max_speed = 9;   // 限速（速度边界）
+    optional double road_border_buffer = 10;    // 道路边界
+}

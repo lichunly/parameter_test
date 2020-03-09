@@ -1,0 +1,29 @@
+syntax = "proto2";
+package adu.common.rpc;
+
+// The RPC input to the module services. In encapsulates the input as
+// (topic, data) pairs, where data is the actual ROS message (which is
+// usually just a serialized proto).
+message Request {
+    // Analogous to a ros::Time, a timestamp is stored in two parts:
+    // seconds and nanoseconds. This is for the convenience of conversion
+    // to and from ros::Time.
+    message Time {
+        optional uint32 seconds = 1;
+        optional uint32 nanos = 2;
+    }
+
+    // Abstracting an ROS message with a serialized proto payload.
+    // This is a normal pattern currently used in ADU.
+    message Message {
+        optional string topic = 1;
+        optional bytes data = 2;
+    }
+
+    // The timestamp that simulates the "receiving" timestamp.
+    optional Time receive_time = 1;
+
+    // A list of actual simulated ROS messages, consumed as the inputs
+    // to the service.
+    repeated Message payload = 2;
+}

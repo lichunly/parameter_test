@@ -1,0 +1,59 @@
+// Defines the error code of hmi.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+// next_id: 36
+enum ErrorCode {
+    OK = 0;
+    ROUTING_INVALID_START_POINT = 1;
+    ROUTING_INVALID_END_POINT = 2;
+    ROUTING_INVALID_WAY_POINTS = 3;
+    ROUTING_CANNOT_CONNECT_SERVICE = 4;
+    ROUTING_INVALID_REQUEST = 5;
+    ROUTING_FAILED = 6;
+    ROUTING_FORBID = 7;  // car is not ready or car is still driving.
+
+    DEVICE_CTRL_CANNOT_CONNECT_SERVICE = 8;    // when device control request cannot connect service, use in all device case
+    DEVICE_CTRL_ERROR_REQUEST = 9;
+    DEVICE_CTRL_RESPONSE_FAILED = 10;
+    SAFECHECK_INVALID = 11;
+    SAFECHECK_WAITING = 26;
+
+    LAUNCH_CANNOT_CONNECT_SERVICE = 12;
+    LAUNCH_NOT_MANUAL = 27;     // launch failed because not in manual mode
+
+    OTA_ERROR = 13;
+    OTA_TIMEOUT = 14;
+    OTA_UNKNOWN = 15;
+    DISENGAGE_CANNOT_CONNECT_SERVICE = 16;
+    DATA_CHECK_CANNOT_CONNECT_SERVICE = 17;
+    CALIBRATION_PARAMS_FILE_LACK = 18;
+    CALIBRATION_CHECK_ERROR = 19;
+    CALIBRATION_POINTCLOUD_NO_DATA = 20;
+    CANNOT_CONNECT_SERVICE = 21;    // for every cybertron service
+    PREPROC_RESPONSE_FAILED = 22;
+    SYSTEM_CTRL_ERROR = 23;
+    EQUAL_WORK_MODE_IGNORE = 24;    // work mode request same as pre-mode, ignored error code.
+    INVALID_REQUEST_PARAMS = 25;    // usual params request error code.
+    DISENGAGE_FEEDBACK_RESPONSE_ERROR = 29;
+    INVALID_BASE_MAP_BIN = 30;
+    INVALID_BACKGROUND_PNG = 31;
+    INVALID_MAP_JSON = 32;
+    INIT_LOCAL_REQ_NULL_ERROR = 33;
+    INIT_LOCAL_NOTI_CHNNEL_ERROR = 34;
+    INVALID_PARKING_SPACE_POINT = 28;   // invalid parking space center point, cannot get parking spaces
+    NO_PARKING_SPACE_FOUND = 35;        // no parking space found around invalid center point
+    MOVE_LOG_ERROR = 36;
+    SET_GLOBAL_PARAM_ERROR = 37;    // for every cybertron global param
+
+    LAUNCH_CAR_NOT_READY = 40;
+    // launcher error start
+    WORKER_NOT_FOUND = 100;
+    WORKER_IS_INITIALIZING = 101;
+    COMMAND_EXEC_ERROR = 102;
+    REQUEST_ERROR = 103;
+    LAUNCHER_EXCEPTION = 199;
+    // launcher error end
+}

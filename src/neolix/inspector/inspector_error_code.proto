@@ -1,0 +1,26 @@
+// Defines the error code of InspectorWorker.
+syntax = "proto2";
+package adu.workers.inspector;
+
+option java_multiple_files = true;
+
+enum ErrorCode {
+    // common
+    OK = 0;
+    ERROR_INVALID_REQUEST = 1;  // error request parameter
+    ERROR_PARAMS_FILE_LACK = 2; // intrinsics or extrinsics parameter files lack
+
+    // CoarseCameraValidity: 10x
+    ERROR_COARSE = 101;         // error request order, please restart
+    ERROR_COARSE_INCOMPLETE = 102;  // coarse result is incomplete
+
+
+    // LidarImuValidity: 20x
+    ERROR_LIDARIMU = 201;       // error request order, please restart
+    ERROR_INVALID_PCDFILE = 202;
+
+    // LidarCameraValidity: 30x
+    ERROR_LIDAR_CAMERA_CHECK = 301;
+    ERROR_IMAGE_NO_DATA = 302;
+    ERROR_POINTCLOUD_NO_DATA = 303;
+}

@@ -1,0 +1,380 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "common_geometry.proto";
+import "decision.proto";
+import "routing.proto";
+import "traffic_light_detection.proto";
+
+// Next-id: 47
+
+message Condition {
+  oneof condition {
+    LogicalCondition logical_condition = 1;
+    SpeedCondition speed_condition = 2;
+    ObjectOverlapCondition object_overlap_condition = 3;
+    AccelerationCondition acceleration_condition = 4;
+    RegionOverlapCondition region_overlap_condition = 5;
+    RegionOverlapLWCondition region_overlap_lw_condition = 6;
+    RunRedLight run_red_light_condition = 7;
+    MainDecisionCondition main_decision_condition = 8;
+    LineSegmentsOverlapCondition line_segments_overlap_condition = 9;
+    TrafficLightCondition traffic_light_condition = 10;
+    ObjectNextToADCCondition object_next_to_adc_condition = 11;
+    ObjectLocationCondition object_location_condition = 12;
+    ObjectDecisionCondition object_decision_condition = 13;
+    ObjectWaveCondition object_wave_condition = 14;
+    RoutingCondition routing_condition = 15;
+    AngleWithHeadingCondition angle_with_heading_condition = 16;
+    CustomizedEmptyAreaCondition customized_empty_area_condition = 17;
+    RetrogradeCondition retrograde_condition = 18;
+    PlanningCondition planning_condition = 19;
+    CrossLineCondition cross_line_condition = 20;
+    ParkingPosCondition parking_pos_condition = 21;
+    DropFrameCondition drop_frame_condition = 22;
+    TurnSpeedLimitCondition turn_speed_limit_condition = 23;
+    ChangeLaneCondition change_lane_condition = 24;
+    OnRoadCondition on_road_condition = 25;
+    TurnLightCondition turn_light_condition = 26;
+    StopLimitCondition stop_limit_condition = 27;
+    PlanningTopicCheckCondition planning_topic_check_condition = 28;
+    PredictionLineShapeCheckCondition prediction_line_shape_check_condition = 29;
+    PassThroughCondition pass_through_condition = 30;
+    CrosswalkStopCondition crosswalk_stop_condition = 31;
+    JunctionDecelerateCondition junction_decelerate_condition = 32;
+    AdcWaveCondition adc_wave_condition = 33;
+    AdcDriftCondition adc_drift_condition = 34;
+    PlanningCurvatureCondition planning_curvature_condition = 35;
+    PlanningCollisionCondition planning_collision_condition = 36;
+    IdentifyNolightCondition identify_nolight_condition = 37;
+    IdentifySlowCondition identify_slow_condition = 38;
+    PlanningOutsideCondition planning_outside_condition = 39;
+    DropFrameMonitorCondition drop_frame_monitor_condition = 40;
+    ChangeLaneFastCondition change_lane_fast_condition = 41;
+    JerkCondition jerk_condition = 42;
+    YawCondition yaw_condition = 43;
+    YawRateCondition yaw_rate_condition = 44;
+    KappaCondition kappa_condition = 45;
+    DkappaCondition dkappa_condition = 46;
+  }
+}
+
+// Next-id: 9
+message PlanningCondition {
+  optional double max_acceleration = 1;
+  optional double min_acceleration = 2;
+  optional double max_acceleration_change_rate = 3;
+  optional double min_acceleration_change_rate = 4;
+  optional double curvature = 5;
+  optional double curvature_change_rate = 6;
+  optional double max_centripetal_acceleration = 7;
+  optional double min_centripetal_acceleration = 8;
+}
+
+// Next-id: 3
+message LogicalCondition {
+  enum OperatorType {
+    UNKNOWN = 0;
+    NOT = 1;
+    AND = 2;
+    OR = 3;
+    IMPLY = 4;
+    XOR = 5;
+  }
+  optional OperatorType operator_type = 1;
+  repeated Condition sub_condition = 2;
+}
+
+// Next-id: 6
+message SpeedCondition {
+  optional string name = 1 [default = "speed"];
+  optional double min_speed = 2 [default = 0.0];
+  optional double max_speed = 3 [default = 1000.0];
+  optional uint32 is_planning = 4 [default = 0];
+  optional double interval = 5 [default = 1.0];
+}
+
+// Next-id: 6 
+message AccelerationCondition {
+  optional string name = 1 [default = "acceleration"];
+  optional double min_acceleration = 2 [default = -1000.0];
+  optional double max_acceleration = 3 [default = 1000.0];
+  optional uint32 is_planning = 4 [default = 0];
+  optional double interval = 5 [default = 1.0];
+}
+
+// Next-id: 6
+message JerkCondition {
+  optional string name = 1 [default = "jerk"];
+  optional double min_jerk = 2 [default = -1000.0];
+  optional double max_jerk = 3 [default = 1000.0];
+  optional uint32 is_planning = 4 [default = 0];
+  optional double interval = 5 [default = 1.0];
+}
+
+// Next-id: 6
+message YawCondition {
+  optional string name = 1 [default = "yaw"];
+  optional double min_yaw = 2 [default = -1000.0];
+  optional double max_yaw = 3 [default = 1000.0];
+  optional uint32 is_planning = 4 [default = 0];
+  optional double interval = 5 [default = 1.0];
+}
+
+// Next-id: 6
+message YawRateCondition {
+  optional string name = 1 [default = "yawrate"];
+  optional double min_yaw_rate = 2 [default = -1000.0];
+  optional double max_yaw_rate = 3 [default = 1000.0];
+  optional uint32 is_planning = 4 [default = 0];
+  optional double interval = 5 [default = 1.0];
+}
+
+// Next-id: 6
+message KappaCondition {
+  optional string name = 1 [default = "kappa"];
+  optional double min_kappa = 2 [default = -1000.0];
+  optional double max_kappa = 3 [default = 1000.0];
+  optional uint32 is_planning = 4 [default = 0];
+  optional double interval = 5 [default = 1.0];
+}
+
+// Next-id: 6
+message DkappaCondition {
+  optional string name = 1 [default = "dkappa"];
+  optional double min_dkappa = 2 [default = -1000.0];
+  optional double max_dkappa = 3 [default = 1000.0];
+  optional uint32 is_planning = 4 [default = 0];
+  optional double interval = 5 [default = 1.0];
+}
+
+// Next-id: 5
+message ObjectOverlapCondition {
+  enum DirectionType {
+    UNKNOWN = 0;
+    NOT_REQUIRED = 1;
+    BACK = 2;
+  }
+
+  optional string source_object_ids = 1;
+  optional string target_object_ids = 2;
+  optional double distance = 3;
+  // the relative direction from the source object
+  optional DirectionType direction = 4 [default = NOT_REQUIRED];
+}
+
+// Next-id: 4
+message RegionOverlapCondition {
+  optional string object_ids = 1;
+
+  // Coordinates of region corners. e.g. x1, y1, x2, y2, etc
+  repeated double region_corner_xy = 2 [packed = true];
+
+  // True if the condition requires the region fully containing the object.
+  optional bool require_fully_contain = 3;
+}
+
+// Next-id: 3
+message LineSegmentsOverlapCondition {
+  optional string object_ids = 1;
+
+  // Coordinates of end points in the line segments. The line segments is represented by segments
+  // {(points[0], points[1]), (points[1], points[2]), ..., (points[n - 2], points[n - 1])} where
+  // n is the size of the points. Z fields are ommited.
+  repeated .adu.common.PointENU points = 2;
+
+  // Obviously the line segments can NOT fully contain the object. Therefore the
+  // require_fully_contain field is not needed.
+}
+
+// Next-id: 2
+message TrafficLightCondition {
+  optional .adu.common.traffic_light.TrafficLight traffic_light = 1;
+}
+
+// Next-id: 7
+message RegionOverlapLWCondition {
+  optional string object_ids = 1;
+
+  optional double x = 2;
+  optional double y = 3;
+
+  optional double length = 4;
+  optional double width = 5;
+
+  // True if the condition requires the region fully containing the object.
+  optional bool require_fully_contain = 6;
+}
+
+// Next-id: 2
+message RunRedLight {
+  optional string name = 1 [default = "runredlight"];
+}
+
+// Next-id: 3
+message MainDecisionCondition {
+  optional string name = 1 [default = "no task"];
+
+  optional .adu.common.decision.MainDecision main_decision = 2;
+}
+
+// Next-id: 5
+message ObjectNextToADCCondition {
+  enum PositionType {
+    UNKNOWN = 0;
+    LEFT = 1;
+    RIGHT = 2;
+  }
+
+  optional PositionType position = 1;
+  optional string object_ids = 2;
+  optional double forward_s_distance = 3;
+  optional double backward_s_distance = 4;
+}
+
+// Next-id: 3
+message ObjectLocationCondition {
+  optional string object_id = 1;
+  optional .adu.common.PointENU location = 2;
+}
+
+// Next-id: 2
+message ObjectDecisionCondition {
+  optional .adu.common.decision.ObjectDecisions object_decision = 1;
+}
+
+// Next-id: 6
+message ObjectWaveCondition {
+  optional string name = 1 [default = "id wave"];
+  optional double adc_distance = 2;
+  optional double move_distance = 3;
+  optional double heading_th = 4 [default = 1.5708];
+  optional double shape_ratio_th = 5 [default = 0.5];
+}
+
+// Next-id: 2
+message RoutingCondition {
+  optional .adu.common.routing.RoutingResult routing_res = 1;
+}
+
+// Next-id: 2
+message AngleWithHeadingCondition {
+  optional double angle_th = 1 [default = 2.3562];
+}
+
+// Next-id: 4
+message CustomizedEmptyAreaCondition {
+  repeated double region_corner_xy = 1;
+  optional double start_time = 2 [default = 0.0];
+  optional double end_time = 3 [default = 0.0];
+}
+
+// Next-id: 2
+message RetrogradeCondition {
+  optional uint32 interval = 1 [default = 5];
+}
+
+// Next-id: 2
+message CrossLineCondition {
+  optional uint32 interval = 1 [default = 50];
+}
+
+// Next-id: 3
+message ParkingPosCondition {
+  optional double angle = 1 [default = 0.26];
+  optional double duration = 2 [default = 50];
+}
+
+// Next-id: 2
+message DropFrameCondition {
+  optional uint32 interval = 1 [default = 2];
+}
+
+// Next-id: 2
+message TurnSpeedLimitCondition {
+  optional double speed = 1 [default = 30];
+}
+
+// Next-id: 2
+message ChangeLaneCondition {
+  optional uint32 interval = 1 [default = 10];
+}
+
+// Next-id: 1
+message OnRoadCondition {
+}
+
+// Next-id: 1
+message PlanningOutsideCondition {
+}
+
+// Next-id: 1
+message TurnLightCondition {
+  optional uint32 interval = 1 [default = 30];
+  optional double angle_th = 2 [default = 0.523599];
+}
+
+// Next-id: 2
+message StopLimitCondition {
+  optional double distance = 1 [default = 30];
+}
+
+// Next-id: 2
+message PlanningTopicCheckCondition {
+  optional uint32 duration = 1 [default = 30];
+}
+
+// Next-id: 1
+message PredictionLineShapeCheckCondition {
+}
+
+// Next-id: 3
+message PassThroughCondition {
+  optional double start_time = 1 [default = 0.0];
+  optional double end_time = 2 [default = 0.0];
+}
+
+// Next-id: 1
+message CrosswalkStopCondition {
+}
+
+// Next-id: 1
+message JunctionDecelerateCondition {
+}
+
+// Next-id: 1
+message AdcWaveCondition {
+}
+
+// Next-id: 1
+message AdcDriftCondition {
+}
+
+// Next-id: 2
+message PlanningCurvatureCondition {
+    optional double curvature_limit = 1 [default = 0.29];
+}
+
+// Next-id: 3
+message PlanningCollisionCondition {
+    optional double duration = 1 [default = 10];
+    optional double collision_dis = 2 [default = 0.1];
+}
+
+// Next-id: 1
+message IdentifyNolightCondition {
+}
+
+// Next-id: 1
+message IdentifySlowCondition {
+}
+
+// Next-id: 1
+message DropFrameMonitorCondition {
+}
+
+// Next-id: 3
+message ChangeLaneFastCondition {
+  optional uint32 interval = 1 [default = 35];
+  optional double angle_th = 2 [default = 0.2618];
+}

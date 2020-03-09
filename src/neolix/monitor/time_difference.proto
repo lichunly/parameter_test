@@ -1,0 +1,8 @@
+syntax = "proto2";
+package adu.common.monitor;
+
+message TimeDifference {
+    optional double compute_start = 1;
+    optional double compute_end = 2;
+    optional double control = 3;
+}

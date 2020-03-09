@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package adu.common.planning;
+
+import "header.proto";
+
+message SensorsStatus {
+    optional adu.common.header.Header header = 1;
+    optional uint32 sequence = 2;
+    optional uint32 ultrasonic_status = 3;
+    optional bool ultrasonic_enable = 4;
+    optional uint32 lidar_status = 5;
+    optional bool lidar_enable= 6;
+    optional uint32 radar_status = 7;
+    optional bool radar_enable= 8;
+    optional uint32 camera_status = 9;
+    optional bool camera_enable= 10;
+    optional uint32 minority_line_lidar_status = 11;
+    optional bool minority_line_lidar_enable= 12;
+    optional double minority_line_lidar_turn_probe_distance = 13;
+    optional bool minority_line_lidar_turn_probe_enable = 14;
+    optional double minority_line_lidar_turn_probe_kappa = 15;
+}
+

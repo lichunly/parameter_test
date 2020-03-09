@@ -1,0 +1,17 @@
+syntax = "proto2";
+package baidu.idl_car.canbus;
+
+import "header.proto";
+
+message CanbusFrame {
+  optional double measurement_time = 1;
+  optional uint32 message_id = 2;
+  optional uint32 data_length = 3;
+  optional bytes data = 4;
+}
+
+message CanbusFrames {
+  optional adu.common.header.Header header = 1;
+  repeated CanbusFrame frames = 2;
+}
+

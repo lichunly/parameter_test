@@ -1,0 +1,22 @@
+// Defines the message about routing demand.
+syntax = "proto2";
+package adu.hmi;
+
+import "hmi_error_code.proto";
+import "hmi_common.proto";
+
+option java_multiple_files = true;
+
+// The request message of assist position init 
+message PositionAndHeading {		
+    optional double timestamp = 1;
+    required PolygonPoint position = 2;	
+    required double heading = 3;	
+}	
+
+// The response message of assist position init 
+message LocalInitRes {
+  	required ErrorCode code = 1;
+}
+
+

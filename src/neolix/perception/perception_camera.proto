@@ -1,0 +1,68 @@
+syntax = "proto2";
+package adu.common.perception.camera;
+
+import "header.proto";
+import "perception_obstacle.proto";
+import "sensor_image.proto";
+
+enum CameraErrorCode {
+    ERROR_NONE = 0;
+    ERROR_UNKNOWN = 1;
+}
+
+message Point2D {
+    optional float x = 1;  // in pixels.
+    optional float y = 2;  // in pixels.
+}
+
+message Point3D {
+    optional float x = 1;  // in meters.
+    optional float y = 2;  // in meters.
+    optional float z = 3;  // height in meters.
+}
+
+message Rect {
+    optional int32 x = 1;
+    optional int32 y = 2;
+    optional int32 width = 3;
+    optional int32 height = 4;
+}
+
+message CameraObstacle {
+    optional PerceptionObstacle obstacle = 1;   // PerceptionObstacle
+
+    // 2D information
+    enum CameraType {
+        UNKNOWN = 0;
+        UNKNOWN_MOVABLE = 1;
+        UNKNOWN_UNMOVABLE = 2;
+        PEDESTRIAN = 3;                 // Pedestrian, usually determined by moving behaviour.
+        BICYCLE = 4;                    // bike, motor bike
+        VEHICLE = 5;                    // Passenger car or truck.
+    };
+
+    optional CameraType type = 21;      // obstacle type
+    repeated float type_probs = 22;     // obstacle type
+    optional Point2D upper_left = 23;   // upper left corner of 2D bbox
+    optional Point2D lower_right = 24;  // lower right corner of 2D bbox
+    repeated Point2D key_points = 25;   // 2D key points
+    repeated string debug_message = 26; // debug message
+}
+
+message CameraDebug {
+    optional adu.common.header.Header header = 1;                   // header
+    optional string source_topic = 2;                               // which topic to get the frame
+    repeated CameraObstacle camera_obstacle = 3;                    // an array of obstacles
+    optional CameraErrorCode error_code = 4 [default = ERROR_NONE]; // error code
+}
+
+message LaneMask {
+    optional uint64 stamp = 1;    // timestamp in nanoseconds
+    optional string image_channel_name = 2;   // which channel to get source image
+
+    // ROI
+    optional Rect roi = 3;
+
+    // visual mask
+    optional adu.common.sensor.Image mask = 7;
+}

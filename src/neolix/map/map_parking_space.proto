@@ -1,0 +1,14 @@
+syntax = "proto2";
+package adu.common.hdmap;
+
+import "map_geometry.proto";
+import "map_id.proto";
+
+// 
+message ParkingSpace {
+  optional Id id = 1;
+
+  optional Polygon polygon = 2;
+  repeated Id overlap_id = 4;
+  optional double heading = 5;
+}

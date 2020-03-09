@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+// package adu.closeloop;
+package adu.workers.closeloop;
+
+import "closeloop_params.proto";
+import "closeloop_metric.proto";
+import "closeloop_hdmap.proto";
+
+service MetricService {
+    // start metric
+    rpc StartMetric (Metric) returns (MetricACK) {}
+    // stop metric
+    rpc StopMetric (Metric) returns (MetricResult) {}
+}
+
+service HDMapService {
+    rpc GetHDmapInfo (Point) returns (HDMapParams) {}
+    // // GetNearestLane
+    // rpc GetNearestLane (Point) returns (TwoDoubleParams) {}
+    // // GetWidth
+    // rpc GetWidth (OneDoubleParams) returns (TwoDoubleParams) {}
+}
+

@@ -1,0 +1,9 @@
+syntax = "proto2";
+package adu.common.config;
+
+import "header.proto";
+
+message SceneSpecialConfig {
+    optional adu.common.header.Header header = 1;
+    optional double speed_limit = 2;
+}

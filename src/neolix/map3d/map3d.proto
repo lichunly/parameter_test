@@ -1,0 +1,61 @@
+syntax = "proto2";
+package adu.common.map3d;
+
+// This message defines one cell in the 3D static map.
+message Map3dCell {
+    // Coordinates are truncated to nearest resolution.
+    optional int32 x = 1;
+    optional int32 y = 2;
+    optional int32 z = 3;
+
+    // Aggregated data.
+    optional double mean_x = 4;
+    optional double mean_y = 5;
+    optional double mean_z = 6;
+    optional double mean_intensity = 10;
+
+    optional double stddev_x = 7;
+    optional double stddev_y = 8;
+    optional double stddev_z = 9;
+    optional double stddev_intensity = 11;
+
+    optional int32 point_count = 12;
+}
+
+message Map3dTileConfig {
+    optional string filename = 1;
+
+    // Minimum x and y values of the tile.
+    optional int32 origin_index_x = 2;
+    optional int32 origin_index_y = 3;
+}
+
+// This message defines one tile in the 3D static map.
+message Map3dTile {
+    optional Map3dTileConfig config = 1;
+
+    repeated Map3dCell cell = 2;
+}
+
+message Map3dHeader {
+    optional bytes version = 1;
+    optional bytes date = 2;
+}
+
+// This message defines 3D static map.
+message Map3d {
+    optional Map3dHeader header = 1;
+
+    // Dimension of one grid.
+    optional double cell_resolution = 2;
+
+    // Number of cells per tile.
+    optional int32 num_cells_per_tile = 3;
+
+    // Minimum x, y, and z values in the map.
+    optional double origin_x = 4;
+    optional double origin_y = 5;
+    optional double origin_z = 6;
+
+    repeated Map3dTileConfig tile_config = 7;
+}

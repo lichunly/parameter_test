@@ -1,0 +1,29 @@
+syntax = "proto2";
+package adu.simulation;
+
+message PlayerInfo {
+  optional string bag = 1;
+  optional double rate = 2;
+  optional double start_sec = 3;
+  optional double duration_sec = 4;
+  optional string debug_topic = 5;
+  optional bool loop = 6;
+  optional double begin_time = 7;
+  optional double end_time = 8;
+}
+
+// The request message for controlling local player.
+message LPControl {
+  enum LPType {
+    PLAY = 0;
+    PAUSE = 1;
+    INFO = 2;
+  }
+  optional LPType signal = 1;
+  // Only relevant when request for playing.
+  optional PlayerInfo info = 2;
+}
+
+message LPStatus {
+  repeated PlayerInfo info = 1;
+}

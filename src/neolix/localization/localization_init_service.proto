@@ -1,0 +1,104 @@
+/**@copyright 2018 Baidu Inc. All Rights Reserved.
+ * @file localization_init_service.proto
+ * @brief The protobuf interface for the localization initialization module.
+ *
+ * @author Hao Li (lihao30@baidu.com)
+ */
+
+syntax = "proto2";
+
+package adu.common.localization;
+
+import "common_geometry.proto";
+import "localization_pose.proto";
+import "localization_status.proto";
+
+// The init pose response status
+enum InitPoseRequestRes { 
+    INIT_POSE_GETTING_SUCCESSFUL = 0;
+    INIT_POSE_GETTING_INIT_FAILED = 1;
+}
+
+// The init pose request message
+message InitPoseRequest {
+    optional MsfInitPoseSource pose_type = 1; 
+}
+
+// The init pose response message
+message InitPoseResponse {
+    optional InitPoseRequestRes request_res = 1;  
+    optional MsfInitPoseSource pose_type = 2;
+    optional MsfInitPoseStatus pose_status = 3;
+    optional LocalizationEstimate local_estimate = 4;
+    optional bool if_need_user_interaction = 5;
+}
+
+// The init command
+message InitCommand {
+    optional uint32 command = 1; // 0:update 1:search
+}
+
+// The position and heading message
+message PositionAndHeading {
+    optional double timestamp = 1;
+    required Point3D position = 2;
+    required double heading = 3;
+}
+
+// The termination response status
+enum TerminationRequestRes { 
+    TERMINATION_SUCCESSFUL = 0;
+    TERMINATION_FAILED = 1;
+}
+
+// The init pose request message
+message TerminationRequest {
+    optional uint32 command = 1; 
+}
+
+// The init pose response message
+message TerminationResponse {
+    optional TerminationRequestRes request_res = 1;  
+}
+
+// The reset response status
+enum InitResettingRequestRes { 
+    INIT_RESETTING_SUCCESSFUL = 0;
+    INIT_RESETTING_FAILED = 1;
+}
+
+// The reset request message
+message InitResettingRequest {
+    optional uint32 command = 1; 
+}
+
+// The reset response message
+message InitResettingResponse {
+    optional InitResettingRequestRes request_res = 1;  
+}
+
+// The init details request message
+message InitDetailsRequest {
+    optional uint32 command = 1; 
+}
+
+// The init details response message
+message InitDetailsResponse {
+    optional MsfInitDetails details = 1;
+}
+
+// The pointcloud step change status
+enum PointcloudStepChangeRequestRes { 
+    POINTCLOUD_STEP_CHANGE_SUCCESSFUL = 0;
+    POINTCLOUD_STEP_CHANGE_FAILED = 1;
+}
+
+// The init pose request message
+message PointcloudStepChangeRequest {
+    optional uint32 command = 1; 
+}
+
+// The init pose response message
+message PointcloudStepChangeResponse {
+    optional PointcloudStepChangeRequestRes request_res = 1;  
+}

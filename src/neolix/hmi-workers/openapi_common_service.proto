@@ -1,0 +1,11 @@
+syntax = "proto2";
+package adu.workers.openapi;
+
+option java_multiple_files = true;
+
+import "openapi_common_msg.proto";
+
+service CommonService {
+    rpc CallCommonService (CommonRequest) returns (CommonResponse) {} 
+}
+   

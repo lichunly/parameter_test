@@ -1,0 +1,11 @@
+// Defines the GRPC interfaces of the Decision Service.
+syntax = "proto2";
+package adu.common.decision;
+
+import "decision.proto";
+import "rpc_interface.proto";
+
+// The signature of the RPC service, provided by the Decision module.
+service RPC {
+    rpc RunDecision(adu.common.rpc.Request) returns (DecisionResult) {}
+}

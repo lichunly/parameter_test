@@ -1,0 +1,27 @@
+syntax = "proto2";
+
+package adu.workers.openapi;
+
+service OpenApiServiceForMoblie {
+  rpc NotiMobileControl (ConnectRequest) returns (stream NotiControlReply) {}
+  //Hud & App 都通过这个接口合 open_api 上起的 server 建立连接，ConnectRequest client 向 server 传递连接类型，NotiControlReply server 向 client 返回通知控制的类型，即是紧急停车还是缓慢停车
+}
+
+enum ConnectType {
+  HUD_CONNECT_CONTROL = 0;
+  APP_CONNECT_CONTROL = 1;
+};
+
+enum NotiControlType{
+  NOTI_STOP_STRAIGHT = 0;
+  NOTI_STOP_ASIDE = 1;
+  NOTI_GO_ON = 2;
+}
+
+message ConnectRequest {
+  required ConnectType type = 1;
+}
+
+message NotiControlReply {
+  required NotiControlType reply_type = 1;
+}

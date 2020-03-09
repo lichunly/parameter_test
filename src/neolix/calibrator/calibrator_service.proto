@@ -1,0 +1,12 @@
+// Defines the GRPC interfaces of the CalibratorWorker.
+
+syntax = "proto2";
+package adu.workers.calibrator;
+
+option java_multiple_files = true;
+
+import "calibrator_message.proto";
+
+service CalibratorService {
+    rpc CameraLidarCalibrate (CameraLidarCalibrateRequest) returns (CameraLidarCalibrateResponse) {}
+}

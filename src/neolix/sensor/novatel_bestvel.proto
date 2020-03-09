@@ -1,0 +1,41 @@
+syntax = "proto2";
+
+package adu.common.sensor;
+
+import "header.proto";  
+import "novatel_header.proto";
+
+// message 44
+message BestVel {
+    optional adu.common.header.Header header = 24;
+    optional NovatelHeader novatel_header = 1;    
+
+    // Table 21 in the SPAN on OEM6 manual.
+    // See: http://www.novatel.com/assets/Documents/Manuals/OM-20000144UM.pdf#page=99
+    //enum SolutionStatus {
+    //    SOLUTION_COMPUTED                   = 0;
+    //    INSUFFICIENT_OBSERVATIONS           = 1;
+    //    NO_CONVERGENCE                      = 2;
+    //    SINGULARITY_AT_PARAMETERS_MATRIX    = 3;
+    //    COVARIANCE_TRACE_EXCEEDS_MAXIMUM    = 4;
+    //    TEST_DISTANCE_EXCEEDED              = 5;
+    //    COLD_START                          = 6;
+    //    VELOCITY_OR_HEIGHT_LIMIT_EXCEEDED   = 7;
+    //    VARIANCE_EXCEEDS_LIMITS             = 8;
+    //    RESIDUALS_TOO_LARGE                 = 9;
+    //    INTEGRITY_WARNING                   = 13;
+    //    PENDING                             = 18;
+    //    INVALID_FIX                         = 19;
+    //    INVALID_RATE                        = 22;
+    //}
+    optional uint32 solution_status = 2;
+    optional uint32 vel_type = 3;
+
+    optional float latency = 4;
+    optional float age = 5;
+    optional double horizontal_speed = 6;
+    optional double track_over_ground = 7;
+    optional double vertical_speed = 8;
+    optional float reserved = 9;
+ 
+} 

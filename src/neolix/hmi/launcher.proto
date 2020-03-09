@@ -1,0 +1,81 @@
+syntax = "proto2";
+option java_multiple_files = true;
+package adu.hmi;
+import "hmi_error_code.proto";
+
+enum WorkerNames {
+    EXAMPLE = 0;
+}
+
+enum WorkerStatus {
+    NOT_STARTED = 0;
+    INITIALIZING = 1;
+    RUNNING = 2;
+}
+
+message ServiceInfo {
+    optional string name = 1;
+    // more to be added.
+}
+
+message WorkerInfo {
+    optional string name = 1;
+    optional string ip = 2;
+    optional int32 port = 3;
+    optional WorkerStatus status = 4;
+    repeated ServiceInfo services = 5;
+    optional uint32 timestamp = 6;
+}
+
+message ExecutionResult {
+    optional int32 retcode = 1;
+    optional string stdout = 2;
+    optional string stderr = 3;
+}
+
+message GetWorkersRequest {
+    optional string client_id = 1;
+    repeated string worker_names = 2;
+}   
+
+message GetWorkersResponse {
+    optional ErrorCode code = 1;
+    optional string message = 2;
+    repeated WorkerInfo workers = 3;
+}
+
+message ControlRequest {
+    optional string worker_name = 1;
+    optional string command = 2;
+    optional int32 life_time = 3 [default = 0];
+}
+
+message ControlResponse {
+    optional ErrorCode code = 1;
+    optional string message = 2;
+    optional string worker_name = 3;
+    optional ExecutionResult result = 4;
+    optional WorkerInfo info = 5;
+}
+
+message ControlWorkersRequest {
+    optional string client_id = 1;
+    repeated ControlRequest requests = 2;
+    optional bool wait = 3 [default = false];
+    optional int32 wait_timeout = 4 [default = 0];
+}
+
+message ControlWorkersResponse {
+    optional ErrorCode code = 1;
+    optional string message = 2;
+    repeated ControlResponse responses = 3;
+}
+
+message ReportRequest {
+    optional WorkerInfo info = 1;
+}
+
+message ReportResponse {
+    optional ErrorCode code = 1;
+    optional string message = 2;
+}

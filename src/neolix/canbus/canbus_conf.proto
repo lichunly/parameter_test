@@ -1,0 +1,21 @@
+syntax = "proto2";
+package baidu.idl_car.canbus;
+
+message PbCanbusConf {
+    enum Type {
+        INT = 1;
+        STRING = 2;
+        BOOL = 3;
+        DOUBLE = 4;
+    }
+    message Entry {
+        required Type type = 1;
+        required string key = 2;
+        optional int64 int_val = 3;
+        optional string string_val = 4;
+        optional bool bool_val = 5;
+        optional double double_val = 6;
+    }
+
+    repeated Entry entries = 1;
+}

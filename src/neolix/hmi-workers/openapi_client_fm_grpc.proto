@@ -1,0 +1,122 @@
+syntax = "proto2";
+
+package adu.workers.openapi;
+
+import "openapi_common_msg.proto";
+import "data_worker_query.proto";
+import "data_worker_task.proto";
+import "data_worker_common.proto";
+
+service OpenApiService {
+  rpc Controller (stream ControllerRequest) returns (stream ControllerReply) {}
+}
+
+enum VehicleRunCmd {
+  STOP_STRAIGHT = 0;
+  STOP_ASIDE = 1;
+  GO_ON = 2;
+}
+
+enum AirConditionMode {
+  COLD = 0;
+  WARM = 1;
+  AUTO_MODE = 2;
+  ECO = 3;
+  FAN = 4;
+}
+
+message AirConditionRequest {
+  optional double header = 1;
+  optional float temperature = 2;
+  optional AirConditionMode mode = 3;
+  optional int32 fan = 4;
+  optional bool open = 5;
+}
+
+enum DeviceAction {
+  ON = 0;
+  OFF = 1;
+}
+
+message SwitchRequest {
+  required DeviceAction action = 1;
+}
+
+message TriggerRequest {
+  optional double header = 1;
+  optional bool bool_flag = 3;
+}
+
+enum DeviceCmdType{
+  DOOR_ACTION_CMD = 0;
+  AIR_CONDITION_ACTION_CMD = 1;
+  WHISTLE_ACTION_CMD = 2;
+  HIGHT_LIGHT_ACTION_CMD = 3;
+  LOW_LIGHT_ACTION_CMD = 4;
+  EMERGENCY_LIGHT_ACTION_CMD = 5;
+  INSIDE_LIGHT_ACTION_CMD = 6;
+}
+
+message DeviceContCmd {
+  required DeviceCmdType device_cmd_type = 1;
+  optional DeviceAction door_action_cmd = 2;
+  optional DeviceAction high_beam_action_cmd = 3;
+  optional DeviceAction low_beam_action_cmd = 4;
+  optional DeviceAction emergency_light_action_cmd = 5;
+  optional DeviceAction inside_light_action_cmd = 6;
+  optional AirConditionRequest air_condition_action_cmd = 7;
+  optional TriggerRequest whistle_action_cmd = 8;
+}
+
+enum DataContType {
+  DATA_QUERY = 0;
+  DATA_TASK = 1;
+  BLACK_BOX_QUERY = 2;
+}
+
+message DataContCmd {
+  required DataContType data_cont_type = 1;
+  optional adu.common.collector.DatainfoRequest query_req = 2;
+  optional adu.common.collector.Task task_req = 3;
+}
+
+message DataContResult {
+  required DataContType data_cont_type = 1;
+  optional adu.common.collector.DatainfoResponse query_result = 2;
+  optional adu.common.collector.TaskResult task_result = 3;
+}
+
+enum RequestType{
+  VIN = 0;
+  COMMON = 1;
+  DATA = 2;
+}
+
+message ControllerRequest {
+  required RequestType request_type = 1;
+  required string vin = 2;
+  optional CommonHeader common_header = 3;
+  optional CommonResult common_result = 4;
+  optional DataContResult data_cont_result = 5;
+}
+
+enum ReplyType {
+  VEHICLE_RUN_CMD = 0;
+  DEVICE_CONTROL_CMD = 1;
+  COMMON_CMD = 2;
+  DATA_CONTROL_CMD = 3;
+}
+
+message ControllerReply {
+  required ReplyType reply_type = 1;
+  // vehicle running cmd
+  optional VehicleRunCmd vehicle_run_cmd = 2;
+  // device control cmd
+  optional DeviceContCmd device_cont_cmd = 3;
+  // common header
+  optional CommonHeader common_header = 4;
+  // common cmd
+  optional CommonCmd common_cmd = 5;
+  // data control cmd
+  optional DataContCmd data_cont_cmd = 6;
+}

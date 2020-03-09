@@ -1,0 +1,27 @@
+// Copyright (c) 2016 Baidu.com, Inc. All Rights Reserved
+//
+// @file map_interface_ex.proto
+// @author liwenbo01(com@baidu.com)
+// @date 2016/10/19 19:27:06
+syntax = "proto2";
+package adu.hdmap.common;
+
+import "map.proto";
+import "map_geometry.proto";
+
+message GetMapByRegionRequest {
+    optional adu.common.hdmap.Point left_top_point = 1;
+    optional adu.common.hdmap.Point right_bottom_point = 2;
+}
+
+message GetMapByRegionResponse {
+    enum ErrCode {
+        SUCCESS = 1;
+        ERROR = 2;
+    }
+    optional ErrCode error_code = 1;
+    optional string error_msg = 2;
+
+    optional adu.common.hdmap.Map map = 3;
+}
+

@@ -1,0 +1,74 @@
+syntax = "proto2";
+
+// package adu.closeloop;
+package adu.workers.closeloop;
+
+import "closeloop_params.proto";
+
+message Metric {
+    // metrics
+    enum MetricType {
+        TEST_LOCALIZATION = 0;
+        TEST_PERCEPTION = 1;
+        TEST_PARKINGIN = 2;
+        TEST_PARKINGOUT = 3;
+        TEST_PARKINGSTATION = 4;
+        TEST_STRAIGHTLINE = 5;
+        TEST_ASCENT = 6;
+        TEST_SPEEDBUMP = 7;
+        TEST_TURNING = 8;
+        TEST_STURNING = 9;
+        TEST_NUDGE = 10;
+        TEST_RIGHTANGLE = 11;
+        TEST_XING = 12;
+    }
+    optional MetricType metric_cmd = 1;
+    optional LocalizationParams localization = 2;
+    optional PerceptionParams perception = 3;
+    optional ParkingInParams parkingin = 4;
+    optional ParkingOutParams parkingout = 5;
+    optional ParkingStationParams parkingstation = 6;
+    optional BasicParams straightline = 7;
+    optional AscentParams ascent = 8;
+    optional SpeedBumpParams speedbump = 9;
+    optional BasicParams turning = 10;
+    optional BasicParams sturning = 11;
+    optional NudgeParams nudge = 12;
+    optional BasicParams rightangle = 13;
+    optional XingParams xing = 14;
+}
+
+message MetricResult {
+    // metric results
+    enum ResultType {
+        UNKNOWN = 0;
+        PASSED = 1;
+        FAILED = 2;
+        NODATA = 3;
+        NOMETRIC = 4;
+    }
+    optional ResultType result = 1;
+    optional LocalizationResult localization = 2;
+    optional PerceptionResult perception = 3;
+    optional ParkingInResult parkingin = 4;
+    optional ParkingOutResult parkingout = 5;
+    optional ParkingStationResult parkingstation = 6;
+    optional BasicResult straightline = 7;
+    optional AscentResult ascent = 8;
+    optional SpeedBumpResult speedbump = 9;
+    optional BasicResult turning = 10;
+    optional BasicResult sturning = 11;
+    optional NudgeResult nudge = 12;
+    optional BasicResult rightangle = 13;
+    optional XingResult xing = 14;
+}
+
+message MetricACK {
+    // metric results
+    enum ACKType {
+        ERROR = 0;
+        OK = 1;
+    }
+    // one ACK for all metric commonds
+    optional ACKType ack = 1;
+}

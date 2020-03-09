@@ -1,0 +1,18 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "simulation_common.proto";
+import "simulation_world.proto";
+import "monitor_result.proto";
+
+service UpdateSimWorld {
+  // Sends a request for pushing the updated simulation world.
+  rpc UpdateWorld (PushWorld) returns (UpdateStatus) {}
+  rpc PushMonitorStatus (adu.common.monitor.MonitortResult) returns (UpdateStatus) {}
+}
+
+// The request message
+message PushWorld {
+  optional SimulationWorld sim_world = 1;
+  optional double timestamp_sec = 2; // precision up to nanoseconds
+}

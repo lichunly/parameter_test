@@ -1,0 +1,68 @@
+syntax = "proto2";
+package adu.common.perception.viz;
+
+message Point2D {
+    optional double x = 1;  // in pixels.
+    optional double y = 2;  // in pixels.
+}
+
+message Point3D {
+    optional double x = 1;  // in meters.
+    optional double y = 2;  // in meters.
+    optional double z = 3;  // height in meters.
+}
+
+message CameraSupplement {
+    optional Point2D upper_left = 1;
+    optional Point2D lower_right = 2;
+    optional int32 local_track_id = 3 [default = -1];
+    repeated double pts8 = 4 [packed = true];  // 2Dto3D, pts8.resize(16), x, y... 
+    // `alpha` angle from KITTI: Observation angle of object, ranging [-pi..pi]
+    optional double alpha = 5;  
+}
+
+message SensorObject {
+    optional int32 id = 1;
+    optional Point3D center = 2;
+    optional double theta = 3;
+    optional Point3D direction = 4;
+
+    optional double length = 5;  // obstacle length.
+    optional double width = 6;  // obstacle width.
+    optional double height = 7;  // obstacle height.
+
+    enum Type {
+        UNKNOWN = 0;
+        UNKNOWN_MOVABLE = 1;
+        UNKNOWN_UNMOVABLE = 2;
+        PEDESTRIAN = 3;
+        BICYCLE = 4;
+        VEHICLE = 5;
+    };
+
+    optional Type type = 8 [default = UNKNOWN];
+    optional int32 track_id = 9;
+    optional Point3D velocity = 10;
+
+    repeated double polygon_point = 11 [packed = true]; // x, y, z ...
+
+    // point cloud of the object
+    repeated double cloud = 12 [packed = true];  
+    // point cloud of the object in world coordinates
+    repeated double cloud_world = 13 [packed = true];  
+
+    // age of the tracked object
+    optional double tracking_time = 14;
+    optional double latest_tracked_time = 15;
+    
+    optional CameraSupplement camera_supplement = 16;
+}
+
+message SensorObjects {
+    optional double timestamp = 1;
+    repeated SensorObject objects = 2;
+
+    // column-major 4*4 matrix: sensor2world_pose.resize(16)
+    repeated double sensor2world_pose = 3 [packed = true]; 
+    optional string name = 4;
+}

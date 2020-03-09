@@ -1,0 +1,92 @@
+// Defines the proto message of Fetch-API.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+import "hmi_error_code.proto";
+import "hmi_world.proto";
+import "hmi_hudinfo.proto";
+import "hmi_state.proto";
+import "hmi_ota.proto";
+import "hmi_collect_data.proto";
+import "hmi_ultrasonic.proto";
+
+enum FetchKeyType {
+    ALL = 0;
+    ADC_STATUS = 1;
+    OPERATION_STATUS = 2;
+    ROUTING = 3;
+    PLANNING = 4;
+    OBSTACLES = 5;
+    PREDICTION = 6;
+    DECISION = 7;
+    TRAFFIC_LIGHT = 8;
+    MONITOR = 9;
+    DEVICE = 10;
+    HUD_INFO = 11;
+    SYS_STATE = 12;
+    OTA_STATUS = 13;
+    ULTRASONIC_INFO = 14;
+    ULTRASONIC = 15;
+    OBSTACLES_SINGLE_LASER = 16;
+}
+
+// The request message of FetchSectionMsg api
+message FetchKeys {
+    repeated FetchKeyType keys = 1;     // array of request keys
+}
+
+// The response message for FetchSectionMsg api
+message WorldPackage {
+    required double timestamp = 1;    // the timestamp of response msg
+    required int64 code = 2;     // response code of api
+    optional ADCStatus adc = 3;    // location and chassis of adc car
+    optional ADCOperate operate = 4;   // operate msg, include distance .etc of way
+    optional Routing routing = 5;          // routing result
+    optional Planning planning = 6;    // planning trajectory
+    optional Obstacles obstacles = 7;      // basic msg of obstacles, include decision & prediction
+    optional TrafficLight trafficlight = 8;    // traffic light
+    optional Monitor monitor = 9;          // safety monitor
+    optional Device device = 10;       // device message of adc car
+    optional HudInfo hud_info = 11; //panel app set hud info
+    optional SysState sys_state = 12; //sys stateinfo
+    optional OTAClientStatus ota_status = 13; //ota status
+    optional WorkStationResult work_station_result = 14;
+    optional CollectorStateCheck cllector_state_check = 15; //cllector state check
+    optional BSConnectionInfo bs_connection_info = 16; //bs connection info
+    optional BSSignalStrength bs_signal_strength = 17; //bs signal strength
+    optional ImpendingCollisionEdges ultrasonic_info = 18; //Perception ultrasonic edges
+    //optional adu.common.sensor.Ultrasonic ultrasonic = 19;  ultrasonic distance
+    optional Obstacles obstacles_single_laser = 20;      // 1 beam lms lidar obstacles, without decision & prediction
+}
+
+// The request message of map version fetch api
+message MapVersionRequest {
+}
+
+// The response version of map
+message MapVersionResponse {
+    required ErrorCode code = 1;
+    optional bytes version = 2;
+}
+
+// The request message of safety check result
+message SafeCheckRequest {
+}
+
+// The request message of preprocess task status fetcher
+message FetchPreProcTaskRequest {
+}
+
+// The result of preprocess task fetcher
+message PreProcTaskResult {
+    enum PreProcStatus
+    {
+        NO_TASK = 0;
+        HAS_TASK = 1;
+    }
+    required ErrorCode code = 1;
+    optional PreProcStatus status = 2;
+    optional string data = 3;
+}

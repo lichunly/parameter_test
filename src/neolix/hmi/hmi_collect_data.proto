@@ -1,0 +1,115 @@
+// Defines the collect data proto Msg.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+import "hmi_error_code.proto";
+import "hmi_collect_disk_info.proto";
+import "hmi_collect_car_device.proto";
+
+//collection mode
+enum CarWorkMode{
+    PRODUCT_MODE = 1;
+    AID_MODE = 2;
+    OPER_MODE = 3;
+    CHARGE_MODE = 4;
+    SYSTEM_MODE = 5;
+}
+
+// The check result 
+enum CheckResult{
+    CHECK_RESULT_OK = 1;
+    CHECK_RESULT_NG = 2;
+}
+
+message WorkStationRequest{
+    optional CarWorkMode car_work_mode = 1;
+}
+
+message GlobalWorkMode{
+    optional CarWorkMode car_work_mode = 1;
+}
+
+message WorkStationResult{
+    required adu.hmi.ErrorCode code = 1;
+    optional CarWorkMode car_work_mode = 2;
+}
+
+message CollectorStateCheck{
+    optional CheckResult check_result = 1;
+}
+
+message CollectingStateCheck{
+    enum ErrCode 
+    {
+        SUCCESS = 0;
+        ERROR = 1;
+    }
+    required ErrCode code = 1;
+    optional string data = 2;
+}
+
+message FetchCollectDataPackage {
+    oneof on_of_collect_data_package{
+        CollectorStateCheck collector_state_check = 1; // before collect
+        CollectingStateCheck collecting_state_check = 2; // in collect
+        GlobalWorkMode work_station_result = 3;
+        BSConnectionInfo bs_connection_info = 4; //bs connection info
+        BSSignalStrength bs_signal_strength = 5; //bs signal strength
+        DiskInfoResponse disk_info_res = 6; //disk info
+        CollectDevice collect_device_info = 7;
+    }
+}
+
+message BSSignalStrength{
+    optional int32 signal_strength = 1; //0表示信号弱，1标识信号强，底层暂时只提供这种0-1判定逻辑 
+}
+
+message BSConnectionInfo{
+    optional string connect_info = 1; //从gnss_rtk.conf 读取mount_point字段
+}
+
+message DataCheckRequest{
+    optional string task_id = 1;
+}
+
+message DataCheckResult{
+    enum Status 
+    {
+        PASS = 0;
+        ONGOING = 1;
+        FAIL = 2;
+    }
+    optional Status status = 1;
+    optional int32 errcode = 2;
+    optional string message = 3;
+}
+
+message CollectingStateRequest{
+    optional string task_id = 1;
+    optional bool collecting_mode = 2; //0-collect stop; 1-collect start;
+}
+
+message CollectingStateResult{
+    optional string task_id = 1;  
+    optional string data = 2;
+    optional string error_message = 3;
+}
+
+enum FetchCollectDataKeyType{
+    COLLECT_TASK_STATUS = 1;
+    COLLECTOR_STATE_CHECK_SATIC = 2;
+    COLLECTOR_STATE_CHECK_DYNAMIC = 3;
+    COLLECTOR_STATE_CHECK_CONVERGENCE = 4;
+    BS_SIGNAL_STRENGTH = 5;
+    BS_CONNECTION_INFO = 6;
+    WORK_STATE_RESULT = 7;
+    DISK_MOUNT_INFO = 8;
+    COLLECT_DEVICE_INFO = 9;
+}
+
+message FetchCollectDataKey{
+    optional FetchCollectDataKeyType fetch_key = 1;
+    optional string task_id = 2;
+}

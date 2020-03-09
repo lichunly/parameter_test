@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package adu.common.sensor;
+
+import "header.proto"; 
+
+
+message Joy {
+    optional adu.common.header.Header header = 1;
+    repeated float axes = 2 [packed = true];
+    repeated uint32 buttons  = 3 [packed = true];
+    required int32 mode = 4;
+}
+

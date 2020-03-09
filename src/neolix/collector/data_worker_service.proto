@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+package adu.common.collector;
+import "data_worker_disk.proto";
+import "data_worker_query.proto";
+import "data_worker_task.proto";
+import "data_worker_trigger.proto";
+
+service DataworkerService {
+    // Query Disk List
+    rpc FetchDeviceStatus (FetchCmds) returns (DevicePackage) {}
+
+    // Query Disengage List and Data List
+    rpc QueryData(DatainfoRequest) returns (DatainfoResponse) {}
+
+    // Data Task API
+    rpc DataTaskRequest (Task) returns (TaskResult) {}
+
+    // Data Trigger API
+    rpc DataTriggerRequest (TriggerParams) returns (TriggerResult) {}
+
+}

@@ -1,0 +1,44 @@
+syntax = "proto2";
+
+package patrol;
+
+enum ErrStat {
+    STAT_NORMAL = 0;
+    STAT_ABNORMAL = 1;
+}
+
+enum ErrLevel {
+    LEVEL_WARNING = 1;  // warning
+    LEVEL_FATAL = 2;  // fatal
+    LEVEL_SERIOUS = 3;  // serious
+}
+
+enum ErrFlag {
+    FLAG_DEFAULT = 0;
+    FLAG_SELFCHECK = 1;
+}
+
+message ErrResultItem {
+    required uint64 item_code = 1;
+    required ErrStat err_stat = 2;
+    required ErrLevel err_level = 3;
+    required ErrFlag err_flag = 4;
+    required string module_name = 5;
+    required string err_msg = 6;
+    optional string err_operate = 7;
+    optional uint64 stamp = 8;
+    optional string id = 9;
+    optional string err_detail_chn = 10;
+    optional string err_detail_eng = 11;
+}
+
+message PatrolStatus {
+    required ErrStat err_stat = 1;
+    required ErrFlag err_flag = 2;
+    optional ErrLevel err_level = 3;
+    repeated ErrResultItem err_items = 4;
+    optional uint64 stamp = 5;
+    optional string id = 6;
+    optional bool if_joy_err = 7;
+    optional uint64 stamp_now = 8;
+}

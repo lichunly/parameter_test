@@ -1,0 +1,17 @@
+syntax = "proto2";
+package adu.common.coral;
+
+message PerceptionOpenParams {
+    optional double ground_height_threshold = 1;
+    optional double max_distance_threshold = 2;
+    optional double dist_to_boundary_threshold_left = 3;    // object max distance to left boundary
+    optional double dist_to_boundary_threshold_right = 4;   // object max distance to right boundary
+    optional double max_pt_dist_to_roi = 5; // max distance of object pointclouds to road boundary
+    optional double above_z_threshold = 6;  // filter pointclouds(x,y,z,I) above z
+    optional double ladder_ground_height_threshold = 7;    // filter pointclouds of velodyne16 while height below threshold
+    optional double lms_ladder_ground_height_near_threshold = 8;    // filter near pointclouds of lms while height below threshold
+    optional double lms_ladder_ground_height_away_threshold = 9;    // filter away pointclouds of lms while height below threshold
+    optional double lms_dist_to_boundary_threshold_left = 10;
+    optional double lms_dist_to_boundary_threshold_right = 11;
+    optional double lms_max_pt_dist_to_roi = 12;
+}

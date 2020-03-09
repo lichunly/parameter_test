@@ -1,0 +1,113 @@
+// Copyright (c) 2016 Baidu.com, Inc. All Rights Reserved
+//
+// @file map_interface.proto
+// @author zhangbo12(com@baidu.com)
+// @date 2016/5/17 19:27:06
+syntax = "proto2";
+package adu.hdmap.common;
+
+import "map_xml.proto";
+import "map_interface_ex.proto";
+import "map_compile.proto";
+
+message Orientation {
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3;
+    optional double w = 4;
+}
+message Pose {
+    optional Point3D position = 1;
+    optional Orientation orientation = 2;
+}
+
+message PoseFindLaneRequest {
+    optional Pose pose = 1;
+}
+
+message PoseFindLaneResponse {
+    enum ErrCode {
+        SUCCESS = 1;
+        ERROR = 11;
+    }
+    optional ErrCode error_code = 1;
+    optional string error_msg = 2;
+
+    optional LaneUniqueId lane_uni_id = 11;
+    optional double refline_s_offset = 12;
+}
+
+message FillLaneDataRequest {
+    repeated LaneUniqueId lane_uni_id = 1;
+}
+
+message FillLaneDataResponse {
+    enum ErrCode {
+        SUCCESS = 1;
+        ERROR = 11;
+    }
+    optional ErrCode error_code = 1;
+    optional string error_msg = 2;
+
+    optional DataStore data = 10;
+}
+
+message PoseRouteRequest {
+    optional Pose start_pose = 1;
+    optional Pose end_pose = 2;
+}
+
+message PoseRouteResponse {
+    enum ErrCode {
+        SUCCESS = 1;
+        ERROR = 11;
+    }
+    optional ErrCode error_code = 1;
+
+    optional string error_msg = 2;
+}
+
+message FindPoseRoundRequest {
+    optional Pose pose = 1;
+    optional double length = 2;
+}
+
+message FindPoseRoundResponse {
+    enum ErrCode {
+        SUCCESS = 1;
+        ERROR = 11;
+    }
+    optional ErrCode error_code = 1;
+    optional string error_msg = 2;
+
+    optional DataStore data = 10;
+}
+
+message FindPolygonRequest {
+    repeated Point2D point = 1;
+}
+
+message FindPolygonResponse {
+    enum ErrCode {
+        SUCCESS = 1;
+        ERROR = 11;
+    }
+    optional ErrCode error_code = 1;
+    optional string error_msg = 2;
+
+    optional DataStore data = 11;
+}
+
+message MapRequest {
+  oneof request {
+    PoseRouteRequest route_request = 1;
+    GetMapByRegionRequest get_map_request = 2;
+  }
+}
+
+message MapResponse {
+  oneof response {
+    PoseRouteResponse route_response = 1;
+    GetMapByRegionResponse get_map_response = 2;
+  }
+}

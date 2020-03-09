@@ -1,0 +1,36 @@
+/**@copyright 2018 Baidu Inc. All Rights Reserved.
+ * @file localization_lidar_analysis_data.proto
+ * @brief The protobuf interface for the vehicle localization module.
+ *
+ * @author Hao Li (lihao30@baidu.com)
+ */
+syntax = "proto2";
+
+package adu.common.localization;
+
+import "header.proto";
+import "common_geometry.proto";
+import "localization_pose.proto";
+
+message HistogramFilterValues {
+    // Rows of histogram filter 
+    required uint32 rows = 1;
+
+    // Cols of histogram filter 
+    required uint32 cols = 2;    
+
+    // Values of histogram filter
+    repeated float values = 3;
+}
+
+message LocalLidarAnalysisData {
+    required double timestamp = 1;
+    optional Pose input_pose = 2;
+    optional HistogramFilterValues filter_values = 3;
+    optional Uncertainty uncertainty = 4;
+    optional bytes others = 5;
+    optional double localization_score = 6;
+    optional double valid_ratio = 7;
+    optional double intensity_weight = 8;
+    optional double altitude_weight = 9;     
+}

@@ -1,0 +1,234 @@
+/**
+ * @copyright 2016 Baidu Inc. All Rights Reserved.
+ * @file global_adc_status.proto
+ * @brief The protobuf interface for the vehicle status.
+ */
+ syntax = "proto2";
+package adu.common.status;
+
+import "header.proto";
+import "localization_pose.proto";
+import "common_geometry.proto";
+
+enum DrivingMode {
+    COMPLETE_MANUAL = 0; // human drive
+    COMPLETE_AUTO_DRIVE = 1;
+    AUTO_STEER_ONLY = 2; // only steer
+    AUTO_SPEED_ONLY = 3; // include throttle and brake
+    SECURITY_MODE = 4; // security mode when manual intervention happens, only response status
+}
+
+enum ErrorCode {
+    NO_ERROR = 0;
+    CMD_NOT_IN_PERIOD = 1; // control cmd not in period
+    CHASSIS_ERROR = 2; // car chassis report error, like steer, brake, throttle, gear fault
+    MANUAL_INTERVENTION = 3; // human manual intervention
+    CHASSIS_CAN_NOT_IN_PERIOD = 4; // receive car chassis can frame not in period
+    UNKNOWN_ERROR = 5;
+}
+
+enum GearPosition {
+    GEAR_NEUTRAL = 0;
+    GEAR_DRIVE = 1;
+    GEAR_REVERSE = 2;
+    GEAR_PARKING = 3;
+    GEAR_LOW = 4;
+    GEAR_INVALID = 5;
+    GEAR_NONE = 6;
+}
+
+enum AirConditionMode {
+    AUTO_MODE = 1;
+    ECO = 2;
+    FAN = 3;
+    COLD = 4;
+    WARM = 5;
+}
+
+enum SysFaultLevel {
+    NO_FAULT = 0;
+    SWITCH_INTV = 1;
+    BRAKE_INTV = 2;
+    STEER_INTV = 3;
+    SERIOUS_FLT = 4;
+    MINOR_FLT = 5;
+}
+
+message AirCondition {
+    optional AirConditionMode mode = 1; //空调冷热模式
+    optional float temperature = 2; //空调温度
+    optional int32 fan = 3; //空调风量
+    optional bool inner_loop = 4; //内循环
+    optional bool outside_loop = 5; //外循环
+    optional bool open = 6;
+    optional int32 ctrl_request = 7;
+    optional bool ctrl_response = 8;
+    optional bool ctrl_effect = 9;
+    optional double indoor_temperature = 10;
+}
+
+message ChassisExtendKinglong {
+    optional float dump_energy = 1;       //剩余电量
+    optional bool door_is_clear = 2;      //门口是否有人
+    optional double driving_range = 3;    // driving range left
+    optional int32 charge_state = 4;      // battery charging state
+    optional float cellv_max = 5;
+    optional float cellv_min = 6;
+    optional float cellt_max = 7;
+    optional float cellt_min = 8;
+    optional float batt_volt = 9;
+    optional float batt_curr = 10;
+    optional float motor_spd = 11;
+    optional float avg_nrg_consump = 12;
+}
+
+message ChassisExtend {
+    oneof chassis_extend {
+        ChassisExtendKinglong kinglong = 1;
+    }
+}
+
+// next id :24
+message Chassis {
+    // optional int32 driving_mode = 1; // deprecated, use the id 21 enum replace this [id 21]
+    // optional int32 error_code = 2; // deprecated, use the id 22 enum replace this [id 22]
+    optional bool engine_started = 3;
+    // Engine speed in RPM.
+    optional float engine_rpm = 4 [default = nan];
+    // Vehicle Speed in meters per second.
+    optional float speed_mps = 5 [default = nan];
+    // Vehicle odometer in meters.
+    optional float odometer_m = 6 [default = nan];
+    // Fuel range in meters.
+    optional int32 fuel_range_m = 7;
+    // Real throttle location in [%], ranging from 0 to 100.
+    optional float throttle_percentage = 8 [default = nan];
+    // Real brake location in [%], ranging from 0 to 100.
+    optional float brake_percentage = 9 [default = nan];
+    // Real gear location.
+    // optional int32 gear_location = 10; deprecated use enum replace this [id 23]
+    // Real steering location in [%], ranging from 0 to 100.
+    optional float steering_percentage = 11 [default = nan];
+    // Applied steering torque in [Nm].
+    optional float steering_torque_nm = 12 [default = nan];
+
+    // Parking brake status.
+    optional bool parking_brake = 13;
+
+    // Light signals.
+    optional bool high_beam_signal = 14;
+    optional bool low_beam_signal = 15;
+    optional bool left_turn_signal = 16;
+    optional bool right_turn_signal = 17;
+
+    optional bool horn = 18;
+    optional bool wiper = 19;
+    optional bool disengage_status = 20 [deprecated = true];
+    optional DrivingMode driving_mode = 21;
+    optional ErrorCode error_code = 22;
+    optional GearPosition gear_location = 23;
+
+    // timestamp for steering module
+    optional double steering_timestamp = 24; // In seconds, with 1e-6 accuracy
+
+    // chassis also needs it own sending timestamp
+    optional adu.common.header.Header header = 25;
+
+    optional int32 chassis_error_mask = 26 [default = 0];
+    optional string vin = 27;
+    optional bool door = 28;             // 是否开门
+    optional bool headlights = 29;       // 大灯是否开启
+    optional bool front_lamp = 30;       // 小灯是否开启
+    optional bool emergency_lamp = 31;   // 应急灯是否开启
+    optional bool courtesy_lamp = 32;    // 车厢灯是否开启
+    optional AirCondition air_condition = 33;
+    optional ChassisExtend extend_info = 34;
+    optional SafetyMessage safety_msg = 35;
+    optional SysFaultLevel sysfaultlevel = 36;
+}
+
+message Status {
+    optional adu.common.header.Header header = 1;
+    optional Chassis chassis = 2;
+    optional adu.common.localization.Pose pose = 3;
+    // The time of pose measurement, seconds since the GPS epoch (Jan 6, 1980).
+    optional double measurement_time = 4;  // In seconds.
+}
+
+message UserCustomMessage {
+    optional bool ignore_blocked_obstacle = 1 [ default = false ];
+}
+
+message SafetyMessage {
+    optional int32 steering_workmodectlin = 1;
+    optional int32 nbs_faultst = 2;
+    optional int32 brake_fault = 3;
+    optional int32 pmf_default_code = 4;
+    optional int32 hv_veh_faultlevel = 5;
+    optional int32 hv_veh_drive_st = 6;
+    optional int32 vehicle_whole_fault_level = 7;
+    optional int32 drive_system_fault_level = 8;
+    optional int32 high_voltage_battery_fault_level = 9;
+    optional int32 steering_system_fault_level = 10;
+    optional int32 parking_system_fault_level = 11;
+    optional int32 brake_system_fault_level = 12;
+    optional int32 aeb_trigger_state = 13;
+}
+
+enum State {
+    INIT = 0;
+    CRUISE = 1;
+    WAIT = 2;
+    FINISH = 3;
+    PARKING_IN = 4;
+    PARKING_OUT = 5;
+    ESTOP = 6;
+    UPDC = 7;
+}
+
+enum ResultCode {
+    RESULT_SUCCESS = 0;
+    RESULT_FAIL = 1;
+}
+
+message ParkingInContext {
+    optional string parking_id = 1;
+    optional adu.common.Point3D destination = 2;
+}
+
+message ParkingOutContext {
+    optional adu.common.Point3D destination = 1;
+    optional double heading = 2;
+}
+
+message FinishContext {
+    optional State last_state = 1;
+    optional ResultCode result_code = 2;
+}
+
+message Context {
+    oneof context {
+        FinishContext finish_context = 1;
+        ParkingInContext parking_in_context = 2;
+        ParkingOutContext parking_out_context = 3;
+    }
+}
+
+enum StopReason {
+    NOT_STOP = 0; 
+    ESTOP_FROM_PLANNING = 1;   //front obs detected, process estop
+    REACH_STATION = 2;         //reach station, process Parking
+    PARK_IOV = 3;              //recv P, process Parking
+    VEHILCE_COLLISION = 4;     //Vehicle collision with obs
+    INVALID_POSITION = 5;      //current pos cannot start auto-drive
+    INVALID_HILL_START = 6;    //current pos cannot start auto-drive
+    HUMAN_TAKE_OVER=7;         //human takeover
+}
+
+message GlobalState {
+    optional adu.common.header.Header header = 1;
+    optional State state = 2;
+    optional Context context = 3;
+    optional StopReason stop_reason=4 [ default = NOT_STOP ];
+}
+

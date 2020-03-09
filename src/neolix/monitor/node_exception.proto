@@ -1,0 +1,11 @@
+syntax = "proto2";
+package adu.common.monitor;
+
+message NodeException {
+    optional string node_name = 1;
+    optional int32 mode_num = 2;
+    optional int32 fault_num = 3;
+    optional string message_detail = 4;
+    optional string timestamp = 5;
+}
+

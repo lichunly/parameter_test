@@ -1,0 +1,24 @@
+syntax = "proto2";
+package adu.common.collector;
+
+import "header.proto";
+
+message Disengage 
+{
+    //topic: /collector/disengage
+    optional adu.common.header.Header header = 1;
+
+    // 'disengage' | 'sos_disengage' | 'softbrake_disengage' |
+    // 'steering_disengage' | 'joystick_disengage'
+
+    // default: "disengage"
+    // softbrake_disengage     刹车踏板、缓刹按钮
+    // sos_disengage     急刹按钮
+    // intervention_disengage     屏蔽智能驾驶  
+    // joystick_disengage       手柄  
+    // stop_and_go_disengage    临时停车
+    required string disengage_type = 2;
+
+    required string task_id = 3;
+    // task_id
+}

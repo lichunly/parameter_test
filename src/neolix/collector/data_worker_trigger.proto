@@ -1,0 +1,34 @@
+syntax = "proto2";
+
+package adu.common.collector;
+
+import "common_geometry.proto";
+import "data_worker_common.proto";
+
+message QualityParam {
+    optional adu.common.Point3D position_std_dev = 1; 
+    optional adu.common.Point3D orientation_std_dev = 2; 
+    optional adu.common.Point3D linear_velocity_std_dev = 3; 
+    optional bytes stn_id = 4;
+}
+message MapUpdateParam {
+    optional double start_timestamp = 1;    // 进入某街区的Unix时间戳
+    optional double end_timestamp = 2;      // 离开某街区的Unix时间戳
+    repeated QualityParam quality = 3;      // 某街区内定位评价指标抽样
+}
+message PreprocessParams {
+    optional MapUpdateParam map_update_param = 1;
+    // optional DissengageParam disengage_param = 2;
+    // ...
+}
+message TriggerParams {
+    optional double timestamp = 1;           // 消息发出的时间, 与task无关
+    required string recorder_group = 2;
+    required string recorder_rules = 3;
+    required string task_id = 4;            // StateMaster⽣生成唯⼀一的data_id
+    optional PreprocessParams params = 5;
+}
+ 
+message TriggerResult {
+    required ErrorCode code = 1;
+}

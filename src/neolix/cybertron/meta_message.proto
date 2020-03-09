@@ -1,0 +1,6 @@
+syntax = "proto2";
+
+message MetaMessage {
+    required uint64 message_id = 1;
+    required string data = 2;
+};

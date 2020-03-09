@@ -1,0 +1,17 @@
+syntax = "proto2";
+option java_multiple_files = true;
+package adu.hmi;
+
+import "hmi_common.proto";
+
+message ImpendingCollisionEdge {
+    optional int32 id = 1;  // edge ID.
+    repeated int32 cone_id_list = 2; // cone ID.
+    repeated PolygonPoint point = 3; 
+    optional double tracking_time = 4;  // duration of an obstacle since detection in s.
+}
+
+message ImpendingCollisionEdges {
+    repeated ImpendingCollisionEdge impending_collision_edge = 1;  // An array of obstacles
+    required double timestamp = 2;    // the timestamp of response msg
+}

@@ -1,0 +1,10 @@
+syntax = "proto2";
+package adu.common;
+
+message UltrasonicCommand {
+    optional bool enable_ultrasonic = 1 [default = false];    
+}
+
+message PNCCommand {
+    optional UltrasonicCommand ultrasonic_command = 1;
+}

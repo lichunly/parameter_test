@@ -1,0 +1,85 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "disengage.proto";
+import "map.proto";
+import "simulation_common.proto";
+import "simulation_grading_result.proto";
+import "simulation_local_player.proto";
+
+service NodejsToCpp {
+  // Sends a request for retrieving grading result.
+  rpc LoadGradingResultFile (LoadRequest) returns (GradingResult) {}
+  rpc GradeLog (LoadRequest) returns (GradingResult) {}
+  rpc LogDisengage (Disengage) returns (StatusResponse) {}
+  rpc LogComment (Disengage) returns (StatusResponse) {}
+  rpc LogCritical (Disengage) returns (StatusResponse) {}
+  rpc GetMapElementById (MapMeta) returns (.adu.common.hdmap.Map) {}
+  rpc GetMapDiff (MapMeta) returns (MapMeta) {}
+  rpc GetMapName (StartRequest) returns (StatusResponse) {}
+  rpc GetMapInfo (MapInfoRequest) returns (MapInfo) {}
+  rpc StartRouting (StartRequest) returns (StatusResponse) {}
+  rpc PubRouting (PubRequest) returns (StatusResponse) {}
+  rpc InitStartPoint (InitRequest) returns (StatusResponse) {}
+  rpc LocalPlayer (LPControl) returns (LPStatus) {}
+  rpc StartControl (StartRequest) returns (StatusResponse) {}
+  rpc LogTaskPurpose (Disengage) returns (StatusResponse) {}
+  rpc StartAll (StartRequest) returns (StatusResponse) {}
+  rpc ReCheck (StartRequest) returns (StatusResponse) {}
+  rpc ShutDown (StartRequest) returns (StatusResponse) {}
+}
+
+// The request message containing the file's name.
+message LoadRequest {
+  required string file = 1;
+}
+
+// The request message containing the flag.
+message StartRequest {
+  required bool start = 1;
+}
+
+// message of mapinfo request.
+message MapInfoRequest {
+}
+
+// message of mapinfo request response.
+message MapInfo {
+    optional string name = 1;
+    optional string version = 2;
+    optional string district = 3;
+}
+
+// The request message containing the flag.
+message PubRequest {
+  required double start_point_x = 1;
+  required double start_point_y = 2;
+  required double end_point_x = 3;
+  required double end_point_y = 4;
+  repeated PolygonPoint waypoint = 5;
+}
+
+// The request for init start point
+message InitRequest {
+  required double start_point_x = 1;
+  required double start_point_y = 2;
+}
+
+// The message containing the ids of map elements.
+message MapMeta {
+  repeated string lane = 1;
+  repeated string crosswalk = 2;
+  repeated string junction = 3;
+  repeated string signal = 4;
+  repeated string stop_sign = 5;
+  repeated string yield = 6;
+  repeated string overlap = 7;
+  repeated string parking_space = 8;
+}
+
+// The response message containing the status.
+message StatusResponse {
+  required bool status = 1 [default = false];
+  optional string info = 2;
+  optional int64 error_code = 3;
+}

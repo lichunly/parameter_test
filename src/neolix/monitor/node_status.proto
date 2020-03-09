@@ -1,0 +1,10 @@
+syntax = "proto2";
+package adu.common.monitor;
+
+message NodeStatus {
+    optional string name = 1;
+    optional double timestamp = 2;
+    optional int32  status = 3;
+    repeated NodeStatus detail = 4;
+    optional string  real_frequency = 5;
+}

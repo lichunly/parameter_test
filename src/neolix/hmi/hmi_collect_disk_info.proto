@@ -1,0 +1,30 @@
+syntax = "proto2";
+package adu.hmi;
+
+message DiskInfoRequest 
+{
+    optional string message = 1; 
+}
+
+
+message DiskInfoResponse 
+{
+    message DiskInfo 
+    {
+        optional string mount_point = 1;    
+        optional bool external = 2;        
+        optional uint64 size = 3;           
+        optional uint64 used = 4;          
+    }
+
+    enum ErrCode 
+    {
+        SUCCESS = 0;
+        ERROR = 1;
+    }
+
+    optional ErrCode errcode = 1;   
+    optional string message = 2;    
+    repeated DiskInfo disk_info = 3;    
+    optional bool has_external_disk = 4;   
+}

@@ -1,0 +1,29 @@
+// Defines the message about routing demand.
+syntax = "proto2";
+package adu.hmi;
+
+import "hmi_error_code.proto";
+
+option java_multiple_files = true;
+
+// The request message of launch
+message LaunchRequest {
+    optional double header = 1;
+}
+
+// The response message of launch request.
+message LaunchResponse {
+  	required ErrorCode code = 1;
+  	optional string info = 2;
+}
+
+// The request message of disengage
+message DisengageRequest {
+	optional double header = 1;
+}
+
+// The response message of disengage request.
+message DisengageResponse {
+  	required ErrorCode code = 1;
+  	optional string info = 2;
+}

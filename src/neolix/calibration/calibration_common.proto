@@ -1,0 +1,159 @@
+// Defines the common message of calbration.
+
+syntax = "proto2";
+
+package adu.calibration;
+
+import "calibration_error_code.proto";
+import "sensor_image.proto";
+import "sensor_pointcloud.proto";
+import "sensor_ultrasonic.proto";
+
+// status
+message Status {
+    optional ErrorCode code = 1;
+    optional string info = 2;
+}
+
+message StartRequest {
+    optional int32 start_request = 1;
+}
+
+message StartOffline {
+    optional string ieout = 1; // ieout path and filename
+}
+
+// The response message containing the status.
+message StatusResponse {
+    optional Status status = 1;
+}
+
+// get VIN code request
+message GetVinCodeRequest {
+}
+
+// get VIN code response
+message VinCode {
+    optional string vin = 1; // vin code
+}
+
+// vehicle location
+message VehicleLocation {
+    // distance between left-front wheel and stop rod
+    // range: 0~5000, unit: mm
+    required double lf_dist = 1;
+}
+
+// The Ultrasonic Radar checking request message.
+message CheckURIDRequest {
+    optional int32 sensor_id = 1; // 0 - 15
+}
+
+// The response message of checking ultrasonic status.
+message CheckURIDResponse {
+    optional Status status = 1;
+    optional adu.common.sensor.Ultrasonic ultrasonic = 2;
+    optional bool is_detected = 3;
+    optional int32 old_sensor_id = 4;
+    optional int32 new_sensor_id = 5;
+}
+
+// The request message of saving ultrasonic radar.
+message SaveURIDRequest {
+    optional Status status = 1;
+    repeated int32  mapping = 2; // 0 - 15
+}
+
+enum SensorID {
+    CAMERA_LEFT_FORWARD = 0;
+    CAMERA_LEFT_BACK = 1;
+    CAMERA_RIGHT_FORWARD = 2;
+    CAMERA_RIGHT_BACK = 3;
+    CAMERA_REAR = 4;
+    CAMERA_SMARTEREYE = 5;
+    VELODYNE16_LEFT = 6;
+    VELODYNE16_RIGHT = 7;
+    VELODYNE16_BACK = 8;
+    FRONT_RADAR = 9;
+    IMU = 10;
+    LMS = 11;
+}
+
+message SensorStatus {
+    optional Status status = 1;
+    repeated bool is_ok = 2;
+}
+
+message AdjustRequest {
+    // sensor_id
+    required SensorID sensor_id = 1;
+}
+
+message AdjustResponse {
+    optional Status status = 1;
+    optional SensorID sensor_id = 2;
+    optional adu.common.sensor.Image image = 3;
+    optional adu.common.sensor.PointCloud cloud = 4;
+}
+
+message CalibrationResponse {
+    optional Status status = 1;
+    optional double driving_rate = 2;
+    optional double calib_rate = 3;
+}
+
+message DrivingResponse {
+    optional Status status = 1;
+    optional double driving_rate = 2;
+}
+
+// The checking request message.
+message CheckRequest {
+    optional int32 sensor_status = 1;
+    optional int32 sensor_position = 2;
+    optional int32 localization_status = 3;
+}
+
+//
+message GetResultRequest {
+    // sensor_id
+    required SensorID sensor_id = 1;
+}
+
+message Extrinsics {
+    // rotation
+    optional double w = 1;
+    optional double x = 2;
+    optional double y = 3;
+    optional double z = 4;
+    // translation Unit: m
+    optional double tx = 5;
+    optional double ty = 6;
+    optional double tz = 7;
+    // frame_id
+    optional string frame_id = 8;
+    optional string child_frame_id = 9;
+}
+
+message CalibrationResult {
+    optional Status status = 1;
+    optional SensorID sensor_id = 2;
+    optional adu.common.sensor.Image image = 3;
+    optional adu.common.sensor.PointCloud cloud = 4;
+    optional double score = 5;
+}
+
+message LocalizationStatus {
+    optional uint32 svs = 1;
+    optional uint32 sol_svs = 2;
+    optional uint32 position_type = 3;
+    optional float latitude_std = 4;
+    optional float longitude_std = 5;
+    optional float altitude_std = 6;
+    optional uint32 ins_status = 7;
+}
+
+message LocalizationResponse {
+    optional Status status = 1;
+    optional LocalizationStatus local_status = 2;
+}

@@ -1,0 +1,19 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "header.proto";
+import "map_geometry.proto";
+
+message RouteSegment {
+    repeated .adu.common.hdmap.Point point = 1; 
+}
+
+message LaneChangeArea {
+    repeated .adu.common.hdmap.Point point = 1; 
+}
+
+message RoutingPath {
+  optional .adu.common.header.Header header = 1;
+  repeated RouteSegment route_segment = 2;
+  repeated LaneChangeArea lane_change_area = 3;
+}

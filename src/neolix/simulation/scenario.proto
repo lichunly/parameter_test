@@ -1,0 +1,204 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "simulation_grading_config.proto";
+import "traffic_light_detection.proto";
+import "global_adc_status.proto";
+import "planning.proto";
+message FuzzingConfig {
+}
+
+message ModuleConfig {
+  optional string module_name = 1;
+  optional string params = 2;
+  optional bool enable = 3;
+}
+
+message Agent {
+  // Static, lane follow and tracked objects.
+  enum MotionType {
+    STATIC = 0;
+    LANE_FOLLOW = 1;
+    TRACKED = 2;
+    SMART = 3;
+    SPLINES = 4;
+    TRACKED_L2WSS=5;
+  }
+  optional string id = 1;
+  optional string description = 2;
+  optional double width = 3 [default = 2.0];
+  optional double length = 4 [default = 5.0];
+  optional double height = 5 [default = 1.8];
+  enum Type {
+    VEHICLE = 0;
+    BICYCLE = 1;
+    PEDESTRIAN = 2;
+    UNKNOWN_UNMOVABLE = 3;
+    UNKNOWN_MOVABLE = 4;
+  }
+  optional Type type = 6;
+  optional double appear_time = 7;
+  optional double disappear_time = 8;
+  message Point3D {
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3 [default = 0.0];
+  }
+  message TrackedPoint {
+    optional double x = 1;
+    optional double y = 2;
+    optional double heading = 3;
+    optional double speed = 4;
+    optional double acceleration = 5;
+    optional double z = 6 [default = 0.0];
+    optional Point3D ori_velocity = 7;
+    optional double width = 8 [default = 2.0];
+    optional double length = 9 [default = 5.0];
+    optional double height = 10 [default = 1.8];
+    repeated Point3D polygon_point = 11;
+  }
+  repeated TrackedPoint tracked_point = 9;
+  //follow lane worldsim
+  optional MotionType motiontype = 10;
+  optional double distance = 11;
+  optional TrackedPoint start_position = 12;
+  optional TrackedPoint end_position = 14;
+  optional string start_lane = 15;
+  optional string end_lane = 16;
+  // TODO: add smart agent config.
+
+  //start when distance from adc < start_distance
+  optional double start_distance = 13;
+  optional int32 trigger_type = 20 [default = 0];
+  optional double start_time = 21 [default = 0.0];
+
+  optional double collision_distance = 17 [default = 3.0];
+
+  //splines switch
+  optional int32 splines_switch = 18 [deprecated = true];
+  //splines factor
+  optional double splines_factor = 19 [default = 0.1];
+  optional bool disappear_switch = 22 [default = false];
+}
+
+// Next-id: 10
+message Scenario {
+  optional string name = 1;
+  optional string description = 2;
+ 
+  message Point {
+    optional double x = 1;
+    optional double y = 2;
+    optional double speed = 3 [default = 0.0];
+    optional double heading = 4 [default = 0.0];
+    optional int32 type = 5 [default = 1];
+    // TODO: add lane-id and ratio.
+  }
+
+  // way point for router
+  message WayPoint {
+    optional string id = 1;
+    optional double s = 2;
+    optional Point pos = 3;
+    optional int32 type = 4 [default = 1];
+  }
+
+  // Only use in WorldSim.
+  optional Point start = 3;
+  optional Point router_start = 23;
+  optional Point end = 4;
+  repeated WayPoint waypoint = 13;
+  // Only use in LogSim
+  optional string log_file = 5;
+  optional double log_file_start_time = 6;
+  optional double log_file_end_time = 7;
+  
+  // map file 
+  optional string map_file = 8;
+
+  // metric belong to the scenario.
+  optional GradingConfig grade_config = 9;
+  
+  // agent type
+  repeated Agent agent = 10;
+
+  // module config, disable/enable msg
+  repeated ModuleConfig module_config = 11;
+  optional FuzzingConfig fuzzing_config = 12;
+  message CarStatus {
+    optional double time = 1;
+    optional adu.common.status.Status carstatus = 2;
+  }
+  message TrafficLight {
+    optional double time = 1;
+    optional adu.common.traffic_light.TrafficLightDetection trafficlight = 2;
+  }
+  // original car status
+  repeated CarStatus car_status = 14;
+
+  // original traffic light
+  repeated TrafficLight traffic_light = 15;
+  // l2w switch
+  optional bool l2w_switch = 16 [default = false];
+  message ADCPlanning {
+    optional double time = 1;
+    optional adu.common.planning.ADCTrajectory adcplanning = 2;
+  }
+  // original planning
+  repeated ADCPlanning adc_planning = 17;
+
+  // parking info
+  message ParkingInfo {
+    enum ParkingType {
+      TEMP_PARKING_TIME_TRIG = 0;
+      TEMP_PARKING_POSE_TRIG = 1;
+      SITE_PARKING = 2;
+    }
+    message Pose {
+      optional double x = 1;
+      optional double y = 2;
+    }
+    optional string id = 1;
+    optional ParkingType parking_type = 2;
+    optional double trigger_time = 3;
+    optional Pose trigger_pose = 4;
+    optional double remain_time = 5;
+    optional double epsilon = 6;
+  }
+  
+  repeated ParkingInfo parking_info = 18;
+  optional double detect_distance = 19 [default = 70.0];
+  // traffic light switch
+  optional bool tl_switch = 20 [default = false];
+  message TL {
+    enum ChangeType {
+      GREEN = 0;
+      RED = 1;
+      GREEN_RED = 2;
+      RED_GREEN = 3;
+    }
+    enum TriggerType {
+      NA = 0;
+      DISTANCE = 1;
+      TIME = 2;
+    }
+    message Location {
+      optional double x = 1;
+      optional double y = 2;
+      optional double z = 3;
+    }
+    optional string id = 1;
+    optional ChangeType change_type = 2 [default = GREEN];
+    optional TriggerType trigger_type = 3 [default = NA];
+    optional double trigger_value = 4 [default = 30.0];
+    optional Location location = 5;
+  }
+  repeated TL traffic_lights = 21;
+  // missile mode
+  message MissileMode {
+    optional double start_time = 1 [default = 0.0];
+    optional double end_time = 2 [default = 10000.0];
+  }
+  repeated MissileMode missile_mode = 22;
+}
+

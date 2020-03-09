@@ -1,0 +1,17 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "simulation_common.proto";
+
+service UpdatePointCloud {
+  // Sends a request for pushing the updated point cloud.
+  rpc UpdatePcl (PointCloudStr) returns (UpdateStatus) {}
+}
+
+// Next-id: 3
+message PointCloudStr {
+  // Time
+  optional double timestamp_sec = 1;
+  
+  optional string point_cloud = 2;
+}

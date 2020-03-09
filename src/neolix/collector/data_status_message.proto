@@ -1,0 +1,41 @@
+syntax = "proto2";
+package adu.common.collector;
+
+message DataManagerRequest
+{
+    optional string data = 1;
+}
+
+message DataManagerResponse
+{
+    enum ErrCode 
+    {
+        SUCCESS = 0;
+        ERROR = 1;
+    }
+
+    required ErrCode code = 1;
+    optional string data = 2;
+}
+
+message DataVerificationRequest
+{
+    optional string fm_task_id = 1;
+}
+
+message DataVerificationResponse
+{
+    enum Status 
+    {
+        PASS = 0;
+        ONGOING = 1;
+        FAIL = 2;
+    }
+
+    optional Status status = 1;
+    optional int32 errcode = 2;
+    optional string message = 3;
+    // optional string data = 4;
+}
+
+

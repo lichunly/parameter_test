@@ -1,0 +1,27 @@
+syntax = "proto2";
+
+package adu.common.integ_sins_pva;
+
+import "header.proto";
+import "common_geometry.proto";
+
+message IntegSinsPva{
+    optional adu.common.header.Header header = 1;
+
+    //the position calculated by SINS
+    //rad
+    optional PointLLH position = 2;
+
+    //the velocity calculated by SINS
+    //m/s
+    optional Point3D velocity = 3;
+
+    //the attitude euler calculated by SINS
+    //rad
+    optional Point3D attitude = 4;
+
+    //9-by-9 covariance matrix of the sins pva
+    repeated double pva_covar = 5 [packed = true];
+
+    optional bool init_and_alignment = 6;
+}

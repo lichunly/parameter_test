@@ -1,0 +1,154 @@
+// This proto defines the configuration semantics for the Simulator
+// Weaver project.
+//
+// NOTE(breakds): As part of an evolving library, this configuration
+// proto stable yet. If you plan to write anything depending on this
+// proto, especailly on SERIALIZING and DESERIALIZING this proto,
+// please confirm with me <yangyiqing@baidu.com>.
+//
+// TODO(breakds)[Medium]: Need to provide a configuration validator to
+// help the user identify syntax/semantic errors in the configuration.
+syntax = "proto2";
+
+package adu.simulation;
+
+// WeaverConfig is the top level configuration object.
+//
+// Next slot: 4
+message WeaverConfig {
+    // Indicates the minimum version of the library that is compatible
+    // with this configuration. This is not used yet, but will be used
+    // in the future to tackle backward-compatibility issue.
+    optional string version = 1;
+
+    // The list of module configurations. A module corresponds to an
+    // ADU module such as Decision, Perception, Planning etc. A
+    // configured module will be used to generate events and messages
+    // to replace corresponding messages in the original ROS bag.
+    repeated WeaverModuleConfig module = 2;
+
+    // Specifies the parameters to communicate with the Decision
+    // service.
+    optional DecisionServiceConfig decision = 3;
+
+    // Specifies the parameters for the fake routing module;
+    optional FakeRoutingConfig fake_routing = 4;
+}
+
+// Defines the parameters for each module. See above for details of
+// modules.
+//
+// Next slot: 8
+message WeaverModuleConfig {
+    // Indicates the type of the module. For example, a module with
+    // type 'DECISION' is responsible for computing and committing
+    // DecisionResult message to the output bag.
+    //
+    // Next slot: 7
+    enum ModuleType {
+        // Raw bag module generate messages from an specified ROS bag.
+        RAW_BAG = 1;
+
+        // For testing purpose only. A mock string module generates
+        // messages from an internal counter.
+        MOCK_STRING = 2;
+
+        // For testing purpose only. A Mock-copy string module
+        // generates messages by duplicating the topic it listens to.
+        MOCK_COPY_STRING = 3;
+
+        // This module sends fake decision results without consulting
+        // the decision service.
+        FAKE_DECISION = 4;
+
+        // Decision module computes and generates DecisionResult from the most
+        // recent messges of interest, e.g. Planning and Perception.
+        DECISION = 5;
+
+        // This module sends fake routing results without consulting
+        // the routing service.
+        FAKE_ROUTING = 6;
+    }
+
+    // Triggers
+    //
+    // Triggers defines how and when a module is asked to generate
+    // messages. Currently we have:
+    //
+    // 1. Timer Trigger - events are triggered by a timer with a
+    //    predefined frequency. The user can specify interval (inverse
+    //    of the frequency, in millieseconds; and initial delay, the
+    //    delay between the start of the input bag and the first event
+    //    from this module, in millieseconds. The use can also specify
+    //    the duration within which the module is active.
+    //
+    // 2. Topic Trigger - events are triggered when there is a new
+    //    message committed to the specified topic(s). This is mainly
+    //    used for data driven modules.
+
+    // See above on `Triggers`.
+    message TimerTrigger {
+        // In millieseconds.
+        optional uint64 initial_delay = 1;
+        // In millieseconds.
+        optional uint64 interval = 2;
+        // In Millieseconds.
+        optional uint64 duration = 3;
+    }
+
+    // See above on `Triggers`.
+    message TopicTrigger {
+        // The topic that is used to trigger this module. Note that if
+        // you want to explicit use a topic from the bag as the
+        // trigger, use "bag:<topic name>" instead of "<topic name>"
+        // here.
+        repeated string topic = 1;
+    }
+
+    // The type of the module. See above for details.
+    optional ModuleType type = 1;
+
+    // A list of topics that the module will use to compute the next
+    // message. For exmaple, Decision module will have perception
+    // obstacle topic in its `input_topic`, as well as PNC planning
+    // topic.
+    repeated string input_topic = 2;
+
+    // A list of topics that the module will generate message to.
+    // Usually just one.
+    repeated string output_topic = 3;
+
+    // The parameter `compute_delay` and `commit_delay` specifies the
+    // behavior in the module's life cycle.
+    //
+    // Compute Delay is the duration between the time when the module
+    // is triggered and the time when the module actually startsto
+    // compute.
+    optional uint64 compute_delay = 4;
+
+    // Commit Delay is the duration between the time when the module
+    // start to compute, and the time when the output message is
+    // delivered.
+    optional uint64 commit_delay = 5;
+
+    // See above on `Triggers`.
+    optional TimerTrigger timer_trigger = 6;
+    optional TopicTrigger topic_trigger = 7;
+}
+
+// Specifies the parameter to discover the Decision service.
+message DecisionServiceConfig {
+    // Host address or domain name that serves the Decision service.
+    // Examples are 'localhost', '127.0.0.1' etc.
+    optional string address = 1;
+
+    // The port of the Decision service.
+    optional string port = 2;
+}
+
+// Specifies the parameters for the fake routing module;
+message FakeRoutingConfig {
+    // Fake routing always returns the routing response from the file
+    // specified by this parameter.
+    optional string proto_path = 1;
+}

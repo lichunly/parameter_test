@@ -1,0 +1,12 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "simulation_common.proto";
+
+// Next-id: 3
+message PointCloud {
+  // Time
+  optional double timestamp_sec = 1;
+  
+  repeated PolygonPoint point_cloud = 2;
+}

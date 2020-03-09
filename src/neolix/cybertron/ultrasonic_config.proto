@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package cybertron.proto;
+
+message UltrasonicConfig {
+    optional string extrinsics = 1;
+    optional uint32 can_port = 2;
+    optional uint32 output_type = 3;
+    optional string module_name = 4;
+    optional string host = 5;
+    optional int32  port = 6;
+}

@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package adu.common.collector;
+
+message StateMsg {
+    optional string datatype = 1;     // datatype
+    required double timestamp = 2;    // cyber-msg timestamp
+    optional string tag = 3;    // tag json string
+    optional string data = 4;         // ETL_Model encode json to string
+}
+
+message StateAck {
+    optional bool ack = 1 [default = true];    // ACK of StateCollector
+}
+
+service StateService {
+    rpc SendMsg (StateMsg) returns (StateAck) {}
+}
+

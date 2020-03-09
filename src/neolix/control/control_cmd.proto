@@ -1,0 +1,98 @@
+syntax = "proto2";
+package adu.common.control;
+
+import "header.proto";
+import "global_adc_status.proto";
+
+message ControlCommand {
+    optional adu.common.header.Header header = 1;
+    // control mode, set mode according to low level defination
+    // optional int32 driving_mode = 2;
+    // deprecated, use enum instead [id 19]
+    // target throttle in percentage [0, 100]
+    optional double throttle = 3;
+    // target brake in percentage [0, 100]
+    optional double brake = 4;
+    // gear level, set gear according to low level defination
+    // optional int32 gear = 5;
+    // deprecated, use enum instead [id 20]
+    // target steering rate, in percentage of full scale per second [-100, 100]
+    optional double steering_rate = 6;
+    // target steerig angle, in percentage of full scalce [-100, 100]
+    optional double steering_target = 7;
+    // parking brake engage. true: engaged
+    optional bool parking_brake = 8;
+    // target speed, in km/h
+    optional double speed = 9;
+    // target acceleration in m`s^-2
+    optional double acceleration = 10;
+
+    // lights enable command
+    optional bool high_beam = 11;
+    optional bool low_beam = 12;
+    optional bool left_turn = 13;
+    optional bool right_turn = 14;
+    optional bool horn = 15;
+
+    // model reset
+    optional bool reset_model = 16;
+    // engine on/off, true: engine on
+    optional bool engine_on_off = 17;
+    // completion percentage of trajectory planned in last cycle
+    optional double trajectory_fraction = 18;
+    optional adu.common.status.DrivingMode driving_mode = 19;
+    optional adu.common.status.GearPosition gear_location = 20;
+    optional adu.common.status.AirCondition air_condition = 21;
+    optional DoorCommand door = 22;
+    optional bool headlights = 23;
+    optional bool front_lamp = 24;
+    optional bool emergency_lamp = 25;
+    optional bool courtesy_lamp = 26;
+    optional bool estop = 27;
+
+    // canbus proxy send canbus frame periodically when start,
+    // canbus_send_enable is used to control canbus-proxy whether
+    // to send canbus frame.
+    // this feature is added for functional safety module.
+    optional bool canbus_send_enable = 28;
+
+    // check joystick control status
+    optional bool joy_control = 29;
+
+    optional double longitude = 30;
+    optional double driving_direction = 31;
+    optional double latitude = 32;
+    optional int32 charge_remind = 33;
+    optional uint32 fault_rank = 34;
+    optional uint64 fault_code = 35;
+    optional ControlContext contrl_context = 36;
+}
+
+enum DoorCommand {
+    NO_ACTION = 0;
+    OPEN = 1;
+    CLOSE = 2;
+}
+
+message ControlContext {
+    optional adu.common.header.Header header = 1;
+    optional LateralControlContext lat_ctrl_ctx = 2;
+    optional LongitudinalControlContext long_ctrl_ctx = 3;
+    optional double speed_limit = 4;
+    optional double throttle_limit = 5;
+}
+
+message LateralControlContext {
+    optional adu.common.header.Header header = 1;
+    optional double heading_error = 2;
+    optional double lateral_error = 3;
+    optional double steer_angle = 4;
+}
+
+message LongitudinalControlContext {
+    optional adu.common.header.Header header = 1;
+    optional double station_error = 2;
+    optional double speed_error = 3;
+    optional double throttle = 4;
+    optional double brake = 5;
+}

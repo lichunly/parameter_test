@@ -1,0 +1,10 @@
+module_config {
+    module_library : "lib/libparameter_test.so"
+    timer_components {
+        class_name : "ExampleTTTComponent"
+        config {
+            name: "parameter_test"
+            interval: 1000
+        }
+    }
+}

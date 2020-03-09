@@ -1,0 +1,181 @@
+// Defines the proto message of Fetch-API.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+import "global_adc_status.proto";
+import "common_geometry.proto";
+import "patrol_result.proto";
+import "sensor_image.proto";
+import "hmi_common.proto";
+import "hmi_routing.proto";
+import "hmi_planning.proto";
+import "hmi_obstacle.proto";
+import "hmi_car_device.proto";
+import "hmi_ota.proto";
+import "hmi_error_code.proto";
+
+// The location message of auto-driving-car
+message ADCStatus {
+    enum TurnLight {
+        LEFT = 1;
+        RIGHT = 2;
+        EMERGENCY = 3;
+    }
+
+    required double timestamp = 1;
+    optional PolygonPoint position = 2;   // location of adc car
+    optional double heading = 3;  // heading of adc car
+    optional double speed = 4;    // speed in m/s
+
+    optional double throttle_percentage = 5;
+    optional double brake_percentage = 6;
+    optional double steering_angle = 7;
+    optional adu.common.status.DrivingMode driving_mode = 8;  // driving mode
+    optional bool disengage_detected = 9; // whether car is disengaged manual
+    optional TurnLight turn_light = 10;     // turn light of adc car
+    // optional GearPosition gear = 11;        // gear position of adc car
+    optional CarStatus car_status = 12; // car status
+    optional adu.common.Quaternion orientation = 13;
+    optional double disengage_time = 14;
+    optional double linear_acceleration = 15;
+}
+
+message CarStatus{
+    
+    optional bool sos_staus = 1;
+    optional bool ready_staus = 2;
+    optional bool stop_staus = 3;
+    
+    enum car_display_status{
+        NORMAL = 1;
+        SOS = 2;
+        READY = 3;
+        STOP = 4;
+    }
+}
+
+// The operation message of hmi demand
+message ADCOperate {
+    required double timestamp = 1;
+    optional double distance = 2;       // the distance of whole routing path
+    optional double remain_distance = 3;    // the remain distance of routing path
+    optional bool reach_station = 4; // whether car has reached the station
+}
+
+// The routing result message
+message Routing {
+    required double timestamp = 1;
+    optional RoutingPath routing_path = 2;  // routing result
+}
+
+// The planning message
+message Planning {
+    required double timestamp = 1;
+    repeated PlanningObject planning_traj = 2;  // planning trajectory
+}
+
+// The obstacle message, include prediction & decision message
+message Obstacles { 
+    enum ObstaclesSourceType{
+        TYPE_OBSTACLES_SINGLE_LASER = 0;
+        TYPE_OBSTACLES = 1;
+    }
+    required double timestamp = 1;
+    repeated ObstacleObject obstacles = 2; // obstacles basic msg
+    optional bool low_illumination = 3 [default = false];
+    optional ObstaclesSourceType obstacles_source_type = 4; // lms_obstacles or obstacles define: TYPE_OBSTACLES_SINGLE_LASER or TYPE_OBSTACLES
+}
+
+// The trafficlight message
+message TrafficLight {
+    enum Color {
+        NO = 0;
+        UNKNOWN = 1;
+        RED = 2;
+        YELLOW = 3;
+        GREEN = 4;
+        BLACK = 5;
+    }
+
+    required double timestamp = 1;
+    optional Color color = 2;
+}
+
+// The monitor message
+message Monitor {
+    required double timestamp = 1;
+    optional patrol.PatrolStatus result = 2;   // monitor result
+}
+
+message AirConditionHmi {
+    optional AirConditionMode mode = 1; //空调冷热模式
+    optional float temperature = 2; //空调温度
+    optional int32 fan = 3; //空调风量
+    optional bool inner_loop = 4; //内循环
+    optional bool outside_loop = 5; //外循环
+    optional bool open = 6;
+    optional int32 ctrl_request = 7;
+    optional bool ctrl_response = 8;
+    optional bool ctrl_effect = 9;
+    optional double indoor_temperature = 10;
+}
+
+enum GearPosition {
+    GEAR_NEUTRAL = 0;
+    GEAR_DRIVE = 1;
+    GEAR_REVERSE = 2;
+    GEAR_PARKING = 3;
+    GEAR_LOW = 4;
+    GEAR_INVALID = 5;
+    GEAR_NONE = 6;
+}
+
+
+// The car device state message
+message Device {
+    required double timestamp = 1;
+    optional float dump_energy = 2;     // remain energy
+    optional bool fired = 3;        // whether car is fired
+    optional bool door = 4;     // whether door is open
+    optional bool door_is_clear =5; // whether has people around door
+
+    optional bool head_lamp = 6;   // whether car head light is on
+    optional bool front_lamp = 7;   // whether car front light is on
+    optional bool emergency_lamp = 8;   // whether emergency lamp is on
+    optional bool courtesy_lamp = 9;    // whether courtesy lamp is on
+    optional bool horn = 10;        // whether horn is on
+    optional AirConditionHmi air_condition = 11;
+    optional double driving_range = 12;     // driving range left
+    optional double server_init_timestamp = 13; // server 本次正常开机启动时间
+    optional string vin = 14; // vin
+    optional int32 charge_state = 15; //充电状态
+    optional bool parking_brake = 16; //电子驻车
+    optional string carid = 17;
+    optional bool joy_control = 18; //手柄状态
+    optional GearPosition gear_location = 19;
+}
+
+message SafeCheckResponse{
+    required adu.hmi.ErrorCode code = 1;
+    optional patrol.PatrolStatus patrol_status = 2;
+}
+
+// Calibration Validity
+message CalibrationValidityRequest {
+    enum CameraType {
+        FRONT = 1;
+        LEFT_FORWARD = 2;
+        LEFT_BACK = 3;
+        RIGHT_FORWARD = 4;
+        RIGHT_BACK = 5;
+        BACK = 6;
+    }
+    optional CameraType type = 1;
+}
+
+message CalibrationValidityResponse {
+    required adu.hmi.ErrorCode code = 1;
+    optional adu.common.sensor.Image image = 2;
+}

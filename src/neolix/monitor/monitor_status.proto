@@ -1,0 +1,11 @@
+syntax = "proto2";
+package adu.common.monitor;
+
+message MonitorStatus {
+    optional bool    abnormal      = 1;
+    optional string  name          = 2;
+    optional string  status        = 3;
+    optional string  value         = 4;
+    optional string  todo          = 5;
+    repeated MonitorStatus detail  = 6;
+}

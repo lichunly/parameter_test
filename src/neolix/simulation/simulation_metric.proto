@@ -1,0 +1,20 @@
+syntax = "proto2";
+package adu.simulation;
+
+import "simulation_condition.proto";
+
+// Next-id: 6
+message Metric {
+  optional string name = 1;
+  optional string description = 2;
+
+  // Set if combined conditions have been used.
+  optional Condition condition = 3;
+
+  // True if the metric is critical to the scenario.
+  optional bool is_critical = 4 [default = true];
+
+  // True if the metric is passing if and only if the condition is passing
+  // all the time.
+  optional bool require_all_time_pass = 5;
+}

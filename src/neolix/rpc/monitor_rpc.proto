@@ -1,0 +1,36 @@
+// Defines
+syntax = "proto2";
+package adu.common.rpc;
+
+import "rpc_interface.proto";
+
+option cc_generic_services = true;
+
+enum MonitorStatus {
+    MONITOR_STATUS_OK = 1;
+    MONITOR_STATUS_ABNORMAL_HIGH_LATENCY = 2;
+    MONITOR_STATUS_ABNORMAL_ZERO_VALUE = 3;
+    MONITOR_STATUS_NOCLUE = 4;
+}
+
+message StatusMessage {
+    optional MonitorStatus status = 1;
+    repeated string fields = 2;
+    optional bytes data = 3;
+}
+
+message RPCResponse {
+    message Time {
+        optional uint32 seconds = 1;
+        optional uint32 nanos = 2;
+    }
+
+    optional Time receive_time = 1;
+    repeated StatusMessage monitor_response = 2;
+}
+
+
+// The signature of the RPC service, provided by the decision module.
+service MonitorService {
+    rpc MonitorRPC(adu.common.rpc.Request) returns (adu.common.rpc.RPCResponse) {}
+}

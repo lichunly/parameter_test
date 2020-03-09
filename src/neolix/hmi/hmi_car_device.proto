@@ -1,0 +1,40 @@
+// Defines the proto of Car Device Control Msg.
+syntax = "proto2";
+package adu.hmi;
+
+option java_multiple_files = true;
+
+// The enum defined for device Control-APIs conf flag
+enum DeviceAction {
+    ON = 0;
+    OFF = 1;
+}
+
+// Switch Control-APIs request message
+message DeciveControlRequest {
+    required DeviceAction action = 1;
+}
+
+
+enum AirConditionMode {
+    COLD = 0;
+    WARM = 1;
+    AUTO_MODE = 2;
+    ECO = 3;
+    FAN = 4;
+}
+
+message AirConditionRequest {
+    optional double header = 1;
+    optional float temperature = 2;
+    optional AirConditionMode mode = 3;
+    optional int32 fan = 4;
+    optional bool open = 5;
+}
+
+message TriggerRequest{
+    optional double header = 1;
+    optional bool bool_flag = 3;
+
+}
+
